@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="BusinessLayer/BusinessLayer.csproj" />
+  <Project Path="CoreLayer/CoreLayer.csproj" />
+  <Project Path="EPAM.Tests/EPAM.Tests.csproj" />
+</Solution>
