@@ -4,7 +4,7 @@ using OpenQA.Selenium.Chrome;
 
 namespace CoreLayer.WebDriver
 {
-    internal class ChromeDriverFactory : IWebDriverFactory
+    public class ChromeDriverFactory : IWebDriverFactory
     {
         public IWebDriver CreateDriver(WebBrowserMode mode)
         {
@@ -16,9 +16,11 @@ namespace CoreLayer.WebDriver
 
             if (mode is WebBrowserMode.Silent)
             {
-                options.AddArgument("--headless");
+                options.AddArgument("--headless=new"); // современный headless
                 options.AddArgument("--disable-gpu");
+                options.AddArgument("--disable-software-rasterizer");
                 options.AddArgument("--window-size=1920,1080");
+
             }
 
             return new ChromeDriver(service, options, TimeSpan.FromSeconds(30));

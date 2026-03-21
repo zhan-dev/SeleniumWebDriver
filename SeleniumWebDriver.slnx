@@ -1,5 +1,10 @@
 <Solution>
-  <Project Path="BusinessLayer/BusinessLayer.csproj" />
+  <Project Path="BusinessLayer/BusinessLayer.csproj">
+    <BuildDependency Project="CoreLayer/CoreLayer.csproj" />
+  </Project>
   <Project Path="CoreLayer/CoreLayer.csproj" />
-  <Project Path="EPAM.Tests/EPAM.Tests.csproj" />
+  <Project Path="EPAM.Tests/EPAM.Tests.csproj">
+    <BuildDependency Project="BusinessLayer/BusinessLayer.csproj" />
+    <BuildDependency Project="CoreLayer/CoreLayer.csproj" />
+  </Project>
 </Solution>
