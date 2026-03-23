@@ -16,7 +16,7 @@ namespace CoreLayer.WebDriver
 
             if (mode is WebBrowserMode.Silent)
             {
-                options.AddArgument("--headless=new"); // современный headless
+                options.AddArgument("--headless=new");
                 options.AddArgument("--disable-gpu");
                 options.AddArgument("--disable-software-rasterizer");
                 options.AddArgument("--window-size=1920,1080");

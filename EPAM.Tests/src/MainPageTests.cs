@@ -16,8 +16,7 @@ namespace EPAM.Tests.src
 
         public override void SetUp()
         {
-            ChromeDriverFactory driverFactory = new ChromeDriverFactory();
-            this.driver = driverFactory.CreateDriver(WebBrowserMode.UXUI);
+            base.SetUp();
 
             this.mainPage = new MainPage(this.driver);
             this.mainPage.MaximizeWindow();
@@ -43,26 +42,16 @@ namespace EPAM.Tests.src
             this.mainPage.InputDataIntoSearchInput(searchText);
             this.mainPage.FindClick();
 
-            var results = this.mainPage.GetSearchResultCollection();
+            var results = this.mainPage.GetSearchResultsCollection();
+            this.mainPage.SearchResultsToConsole(results);
+            bool isAllValid = this.mainPage.IsSearchResultsValid(results, searchText);
 
             // Assert
-            Assert.That(results, Is.Not.Empty);
-
-            foreach (var result in results)
+            Assert.Multiple(() =>
             {
-                var title = result.FindElement(By.CssSelector(".search-results__title-link")).Text;
-                var link = result.FindElement(By.CssSelector(".search-results__title-link")).GetAttribute("href");
-                var description = result.FindElement(By.CssSelector(".search-results__description")).Text;
-
-                Console.WriteLine($"{title} -> {link}");
-                Console.WriteLine(description);
-            }
-
-            bool allValid = results.All(key =>
-                searchText.Any(keyword =>
-                    key.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase)));
-
-            Assert.That(allValid, Is.True);
+                Assert.That(results, Is.Not.Empty);
+                Assert.That(isAllValid, Is.True);
+            });
         }
 
         [TearDown]
