@@ -20,8 +20,9 @@ namespace EPAM.Tests.src
 
             this.mainPage = new MainPage(this.driver);
             this.mainPage.MaximizeWindow();
-            this.mainPage.GoToUrl();
+            this.mainPage.GoToMainPage();
             this.mainPage.WaitUntilTitleIsPresented();
+            this.mainPage.AcceptAllCookie();
         }
 
         [Test]

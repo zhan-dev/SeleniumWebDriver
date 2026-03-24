@@ -1,5 +1,7 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using System.Xml.Linq;
 
 namespace BusinessLayer.src
 {
@@ -13,12 +15,20 @@ namespace BusinessLayer.src
         private readonly By searchInputBy = By.Id("new_form_search");
         private readonly By findButtonBy = By.CssSelector(".search-results__action-section > button");
         private readonly By searchResultsCollectionElementsBy = By.ClassName("search-results__item");
+        private readonly By viewMoreSearchResultsButtonBy = By.ClassName("search-results__view-more");
+        private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
 
         public string Url { get;  } = "https://www.epam.com/";
 
         public MainPage(IWebDriver driver)
         {
+            ArgumentException.ThrowIfNullOrEmpty(nameof(driver));
             this.driver = driver;
+        }
+
+        public void AcceptAllCookie()
+        {
+            this.driver.FindElement(acceptAllCookieBy).Click();
         }
 
         public void MaximizeWindow()
@@ -26,7 +36,7 @@ namespace BusinessLayer.src
             this.driver.Manage().Window.Maximize();
         }
 
-        public void GoToUrl()
+        public void GoToMainPage()
         {
             this.driver.Navigate().GoToUrl(Url);
         }
@@ -58,9 +68,13 @@ namespace BusinessLayer.src
                 return (element.Displayed && element.Enabled) ? element : null;
             });
 
-            activeInput.Click();
-            activeInput.Clear();
-            activeInput.SendKeys(searchText);
+            var clickAndSendKeysActions = new Actions(this.driver);
+
+            clickAndSendKeysActions.Click(activeInput)
+                .Pause(TimeSpan.FromSeconds(0.5))
+                .SendKeys(searchText)
+                .Pause(TimeSpan.FromSeconds(0.5))
+                .Perform();
         }
 
         public void FindClick()
@@ -72,13 +86,45 @@ namespace BusinessLayer.src
 
         public IReadOnlyCollection<IWebElement> GetSearchResultsCollection()
         {
+            var waitViewMoreButton = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            while (true)
+            {
+
+                _ = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5))
+                    .Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
+
+                new Actions(this.driver)
+                    .SendKeys(Keys.End)
+                    .Perform();
+
+                try
+                {
+                    var showMoreButton = waitViewMoreButton.Until(drv =>
+                    {
+                        var element = this.driver.FindElement(viewMoreSearchResultsButtonBy);
+
+                        return (element.Displayed && element.Enabled) ? element : null;
+                    });
+
+                    new Actions(this.driver)
+                        .MoveToElement(showMoreButton)
+                        .Pause(TimeSpan.FromSeconds(1))
+                        .Click(showMoreButton)
+                        .Perform();
+                }
+
+                catch (WebDriverTimeoutException)
+                {
+                    break;
+                }
+            }
+
             var containerWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
             return containerWait.Until(drv =>
             {
                 var elements = drv.FindElements(searchResultsCollectionElementsBy);
                 return elements.Count > 0 ? elements : null;
             });
-
         }
 
         public bool IsSearchResultsValid(IReadOnlyCollection<IWebElement> results, string searchText)
