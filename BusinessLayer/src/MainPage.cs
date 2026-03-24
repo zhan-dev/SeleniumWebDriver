@@ -10,13 +10,15 @@ namespace BusinessLayer.src
         private readonly IWebDriver driver;
 
         private readonly By titleBy = By.TagName("title");
+        private readonly By searchInputBy = By.Id("new_form_search");
+        private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
         private readonly By searchButtonBy = By.ClassName("header__icon");
         private readonly By headerSearchPanelBy = By.ClassName("header-search__panel");
-        private readonly By searchInputBy = By.Id("new_form_search");
-        private readonly By findButtonBy = By.CssSelector(".search-results__action-section > button");
         private readonly By searchResultsCollectionElementsBy = By.ClassName("search-results__item");
         private readonly By viewMoreSearchResultsButtonBy = By.ClassName("search-results__view-more");
-        private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
+        private readonly By topNavigationList = By.ClassName("top-navigation__row");
+        private readonly By findButtonBy = By.CssSelector(".search-results__action-section > button");
+        private readonly By careersLinkBy = By.LinkText("Careers");
 
         public string Url { get;  } = "https://www.epam.com/";
 
@@ -28,7 +30,19 @@ namespace BusinessLayer.src
 
         public void AcceptAllCookie()
         {
-            this.driver.FindElement(acceptAllCookieBy).Click();
+            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            wait.Until(drv =>
+            {
+                try
+                {
+                    var element =  drv.FindElement(acceptAllCookieBy);
+                    return (element.Displayed && element.Enabled) ? element : null;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+            }).Click();
         }
 
         public void MaximizeWindow()
@@ -52,7 +66,7 @@ namespace BusinessLayer.src
             return titleWait.Until(driver => driver.FindElement(this.titleBy));
         }
 
-        public void SearchButtonClick()
+        public void ClickSearchButton()
         {
             this.driver.FindElement(this.searchButtonBy).Click();
         }
@@ -77,7 +91,7 @@ namespace BusinessLayer.src
                 .Perform();
         }
 
-        public void FindClick()
+        public void ClickFindButton()
         {
             var searchPanel = this.driver.FindElement(headerSearchPanelBy);
             var findButton = searchPanel.FindElement(findButtonBy);
@@ -150,6 +164,18 @@ namespace BusinessLayer.src
                 Console.WriteLine($"{title} -> {link}");
                 Console.WriteLine(description);
             }
+        }
+
+        public void GoToCareersViaClick()
+        {
+            var navList = NavigationList();
+            var careersLink = navList.FindElement(careersLinkBy);
+            careersLink.Click();
+        }
+
+        private IWebElement NavigationList()
+        {
+            return this.driver.FindElement(topNavigationList);
         }
     }
 }

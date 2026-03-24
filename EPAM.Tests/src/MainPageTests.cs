@@ -1,7 +1,4 @@
 ﻿using BusinessLayer.src;
-using CoreLayer.Enums;
-using CoreLayer.WebDriver;
-using OpenQA.Selenium;
 
 namespace EPAM.Tests.src
 {
@@ -39,9 +36,9 @@ namespace EPAM.Tests.src
         public void UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected(string searchText)
         {
             //Act
-            this.mainPage.SearchButtonClick();
+            this.mainPage.ClickSearchButton();
             this.mainPage.InputDataIntoSearchInput(searchText);
-            this.mainPage.FindClick();
+            this.mainPage.ClickFindButton();
 
             var results = this.mainPage.GetSearchResultsCollection();
             this.mainPage.SearchResultsToConsole(results);
