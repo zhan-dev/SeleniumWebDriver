@@ -1,7 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
-using System.Xml.Linq;
 
 namespace BusinessLayer.src
 {
@@ -83,7 +82,6 @@ namespace BusinessLayer.src
             });
 
             var clickAndSendKeysActions = new Actions(this.driver);
-
             clickAndSendKeysActions.Click(activeInput)
                 .Pause(TimeSpan.FromSeconds(0.5))
                 .SendKeys(searchText)
@@ -100,11 +98,63 @@ namespace BusinessLayer.src
 
         public IReadOnlyCollection<IWebElement> GetSearchResultsCollection()
         {
+            //Emulate "FindMore" click
+            //ScrollAndClicForAllResults();
+
+            var containerWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            return containerWait.Until(drv =>
+            {
+                var elements = drv.FindElements(searchResultsCollectionElementsBy);
+                return elements.Count > 0 ? elements : null;
+            });
+        }
+
+        public bool IsSearchResultsValid(IReadOnlyCollection<IWebElement> results, string searchText)
+        {
+            if (results.Count == 0)
+            {
+                return false;
+            }
+
+            var keywords = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            return results.All(key =>
+                keywords.Any(word =>
+                    key.Text.Contains(word, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        public void SearchResultsToConsole(IReadOnlyCollection<IWebElement> results)
+        {
+            foreach (var result in results)
+            {
+                var title = result.FindElement(By.CssSelector(".search-results__title-link")).Text;
+                var link = result.FindElement(By.CssSelector(".search-results__title-link")).GetAttribute("href");
+                var description = result.FindElement(By.CssSelector(".search-results__description")).Text;
+
+                Console.WriteLine($"{title} -> {link}");
+                Console.WriteLine(description);
+            }
+        }
+
+        public void GoToCareersViaClick()
+        {
+            var navList = NavigationList();
+            var careersLink = navList.FindElement(careersLinkBy);
+            careersLink.Click();
+        }
+
+        private IWebElement NavigationList()
+        {
+            return this.driver.FindElement(topNavigationList);
+        }
+
+        private void ScrollAndClicForAllResults()
+        {
             var waitViewMoreButton = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
             while (true)
             {
 
-                _ = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5))
+                new WebDriverWait(this.driver, TimeSpan.FromSeconds(5))
                     .Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
 
                 new Actions(this.driver)
@@ -132,50 +182,6 @@ namespace BusinessLayer.src
                     break;
                 }
             }
-
-            var containerWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            return containerWait.Until(drv =>
-            {
-                var elements = drv.FindElements(searchResultsCollectionElementsBy);
-                return elements.Count > 0 ? elements : null;
-            });
-        }
-
-        public bool IsSearchResultsValid(IReadOnlyCollection<IWebElement> results, string searchText)
-        {
-            if (results.Count == 0)
-            {
-                return false;
-            }
-
-            return results.All(key => 
-                searchText.Any(keyword => 
-                key.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase)));
-        }
-
-        public void SearchResultsToConsole(IReadOnlyCollection<IWebElement> results)
-        {
-            foreach (var result in results)
-            {
-                var title = result.FindElement(By.CssSelector(".search-results__title-link")).Text;
-                var link = result.FindElement(By.CssSelector(".search-results__title-link")).GetAttribute("href");
-                var description = result.FindElement(By.CssSelector(".search-results__description")).Text;
-
-                Console.WriteLine($"{title} -> {link}");
-                Console.WriteLine(description);
-            }
-        }
-
-        public void GoToCareersViaClick()
-        {
-            var navList = NavigationList();
-            var careersLink = navList.FindElement(careersLinkBy);
-            careersLink.Click();
-        }
-
-        private IWebElement NavigationList()
-        {
-            return this.driver.FindElement(topNavigationList);
         }
     }
 }
