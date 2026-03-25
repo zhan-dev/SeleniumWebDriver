@@ -38,32 +38,28 @@ namespace EPAM.Tests.src
         }
 
         [TestCaseSource(nameof(keywords))]
-        public void UserGoToCareersSearch_UseCareersSearchPanel_SearchResultsIsAsExpected(string searchText)
+        public void UserGoToCareersSearch_UseCareersSearchPanelWithoutFilters_SearchResultsIsAsExpected(string searchText)
         {
-            //    //Act
+            //Act
             this.careersPage.ClickStartYourSearchHereButton();
             this.careersPage.AcceptAllCookie();
             this.careersPage.EnterTextToSearchInput(searchText);
+            this.careersPage.ClickFindButton();
+
             //this.careersPage.EnterTextToCountryInput("test");
-            this.careersPage.AddRemoteFilter();
-            //this.careersPage.ClickFindButton();
+            //this.careersPage.AddRemoteFilter();
 
-            //    var results = this.mainPage.GetSearchResultsCollection();
-            //    this.mainPage.SearchResultsToConsole(results);
-            //    bool isAllValid = this.mainPage.IsSearchResultsValid(results, searchText);
+            this.careersPage.ExpandLastElement();
+            bool isAllValid = this.careersPage.ValidateLastElementContains(searchText);
 
-            //    // Assert
-            //    Assert.Multiple(() =>
-            //    {
-            //        Assert.That(results, Is.Not.Empty);
-            //        Assert.That(isAllValid, Is.True);
-            //    });
+                Assert.That(isAllValid, Is.True);
         }
 
         [TearDown]
         public override void TearDown()
         {
-            //base.TearDown();
+            //Thread.Sleep(7000);
+            base.TearDown();
         }
     }
 }
