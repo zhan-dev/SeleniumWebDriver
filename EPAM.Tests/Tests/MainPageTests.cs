@@ -5,7 +5,7 @@ namespace EPAM.Tests.Tests
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
-    internal class MainPageTests : BaseSetup
+    internal class MainPageTests : TestSetup
     {
         private MainPage mainPage;
 
@@ -15,10 +15,7 @@ namespace EPAM.Tests.Tests
             base.SetUp();
 
             this.mainPage = new MainPage(this.driver);
-            this.mainPage.MaximizeWindow();
-            this.mainPage.GoToMainPage();
-            this.mainPage.WaitUntilTitleIsPresented();
-            this.mainPage.AcceptAllCookie();
+            this.mainPage.LoadMainPage();
         }
 
         [Test]

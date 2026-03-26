@@ -24,45 +24,21 @@ namespace BusinessLayer.PageObject
         public MainPage(IWebDriver driver)
         {
             ArgumentException.ThrowIfNullOrEmpty(nameof(driver));
+
             this.driver = driver;
         }
 
-        public void AcceptAllCookie()
-        {
-            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            wait.Until(drv =>
-            {
-                try
-                {
-                    var element = drv.FindElement(acceptAllCookieBy);
-                    return (element.Displayed && element.Enabled) ? element : null;
-                }
-                catch (NoSuchElementException)
-                {
-                    return null;
-                }
-            }).Click();
-        }
-
-        public void MaximizeWindow()
-        {
-            this.driver.Manage().Window.Maximize();
-        }
-
-        public void GoToMainPage()
+        public void LoadMainPage()
         {
             this.driver.Navigate().GoToUrl(Url);
+
+            this.WaitUntilTitleIsPresented();
+            this.AcceptAllCookie();
         }
 
         public string GetTitle()
         {
             return this.driver.Title;
-        }
-
-        public IWebElement WaitUntilTitleIsPresented()
-        {
-            var titleWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            return titleWait.Until(driver => driver.FindElement(this.titleBy));
         }
 
         public void ClickSearchButton()
@@ -143,12 +119,35 @@ namespace BusinessLayer.PageObject
             careersLink.Click();
         }
 
+        private void WaitUntilTitleIsPresented()
+        {
+            var titleWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            titleWait.Until(driver => driver.FindElement(this.titleBy));
+        }
+
+        private void AcceptAllCookie()
+        {
+            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            wait.Until(drv =>
+            {
+                try
+                {
+                    var element = drv.FindElement(acceptAllCookieBy);
+                    return (element.Displayed && element.Enabled) ? element : null;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+            }).Click();
+        }
+
         private IWebElement NavigationList()
         {
             return this.driver.FindElement(topNavigationList);
         }
 
-        private void ScrollAndClicForAllResults()
+        private void ScrollAndClickForAllResults()
         {
             var waitViewMoreButton = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
             while (true)
