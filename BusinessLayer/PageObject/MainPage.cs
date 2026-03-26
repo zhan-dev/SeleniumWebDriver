@@ -36,6 +36,15 @@ namespace BusinessLayer.PageObject
             this.AcceptAllCookie();
         }
 
+        public void GoToCareers()
+        {
+            var navList = NavigationList();
+            var careersLink = navList.FindElement(careersLinkBy);
+            careersLink.Click();
+
+            this.WaitUntilTitleIsPresented();
+        }
+
         public string GetTitle()
         {
             return this.driver.Title;
@@ -110,13 +119,6 @@ namespace BusinessLayer.PageObject
                 Console.WriteLine($"{title} -> {link}");
                 Console.WriteLine(description);
             }
-        }
-
-        public void GoToCareersViaClick()
-        {
-            var navList = NavigationList();
-            var careersLink = navList.FindElement(careersLinkBy);
-            careersLink.Click();
         }
 
         private void WaitUntilTitleIsPresented()
