@@ -5,7 +5,7 @@ namespace EPAM.Tests.Tests
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
-    internal class CareersPageTests : BaseSetup
+    internal class CareersPageTests : TestSetup
     {
         private MainPage mainPage;
         private CareersPage careersPage;
@@ -17,14 +17,10 @@ namespace EPAM.Tests.Tests
             base.SetUp();
 
             this.mainPage = new MainPage(this.driver);
-            this.mainPage.MaximizeWindow();
-            this.mainPage.GoToMainPage();
-            this.mainPage.WaitUntilTitleIsPresented();
-            this.mainPage.AcceptAllCookie();
-            this.mainPage.GoToCareersViaClick();
-
             this.careersPage = new CareersPage(this.driver);
-            this.careersPage.WaitUntilTitleIsPresented();
+
+            this.mainPage.LoadMainPage();
+            this.mainPage.GoToCareers();
         }
 
         [Test]

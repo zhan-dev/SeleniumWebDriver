@@ -6,7 +6,7 @@ namespace BusinessLayer.PageObject
     public class CareersPage
     {
         private readonly IWebDriver driver;
-        private readonly By titleBy = By.TagName("title");
+
         private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
         private readonly By searchDivWrapperBy = By.Id("anchor-list-wrapper");
         private readonly By searchFilterRemoteCheckBoxBy = By.Id("checkbox-vacancy_type-Remote-_r_0_");
@@ -30,29 +30,6 @@ namespace BusinessLayer.PageObject
         public string GetTitle()
         {
             return this.driver.Title;
-        }
-
-        public IWebElement WaitUntilTitleIsPresented()
-        {
-            var titleWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            return titleWait.Until(driver => driver.FindElement(this.titleBy));
-        }
-
-        public void AcceptAllCookie()
-        {
-            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            wait.Until(drv =>
-            {
-                try
-                {
-                    var element = drv.FindElement(acceptAllCookieBy);
-                    return (element.Displayed && element.Enabled) ? element : null;
-                }
-                catch (NoSuchElementException)
-                {
-                    return null;
-                }
-            }).Click();
         }
 
         public void ClickStartYourSearchHereButton()
@@ -156,6 +133,22 @@ namespace BusinessLayer.PageObject
             });
 
             return expandedText is not null && expandedText.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+        }
+        public void AcceptAllCookie()
+        {
+            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            wait.Until(drv =>
+            {
+                try
+                {
+                    var element = drv.FindElement(acceptAllCookieBy);
+                    return (element.Displayed && element.Enabled) ? element : null;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+            }).Click();
         }
     }
 }
