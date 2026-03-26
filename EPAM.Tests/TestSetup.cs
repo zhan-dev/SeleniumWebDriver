@@ -4,7 +4,7 @@ using OpenQA.Selenium;
 
 namespace EPAM.Tests
 {
-    internal abstract class BaseSetup
+    internal abstract class TestSetup
     {
         protected IWebDriver driver;
 
