@@ -16,13 +16,19 @@ namespace CoreLayer.WebDriver
 
             if (mode is WebBrowserMode.Silent)
             {
-                options.AddArgument("--headless=new");
+                options.AddArgument("--headless");
                 options.AddArgument("--disable-gpu");
-                options.AddArgument("--disable-software-rasterizer");
                 options.AddArgument("--window-size=1920,1080");
-
             }
-            return new ChromeDriver(service, options, TimeSpan.FromSeconds(30));
+
+            var driver = new ChromeDriver(service, options, TimeSpan.FromSeconds(30));
+
+            if (mode is WebBrowserMode.UXUI)
+            {
+                driver.Manage().Window.Maximize();
+            }
+
+            return driver;
         }
     }
 }
