@@ -2,7 +2,7 @@
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
-namespace BusinessLayer.src
+namespace BusinessLayer.PageObject
 {
     public class MainPage
     {
@@ -34,7 +34,7 @@ namespace BusinessLayer.src
             {
                 try
                 {
-                    var element =  drv.FindElement(acceptAllCookieBy);
+                    var element = drv.FindElement(acceptAllCookieBy);
                     return (element.Displayed && element.Enabled) ? element : null;
                 }
                 catch (NoSuchElementException)

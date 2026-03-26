@@ -1,6 +1,6 @@
-﻿using BusinessLayer.src;
+﻿using BusinessLayer.PageObject;
 
-namespace EPAM.Tests.src
+namespace EPAM.Tests.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]

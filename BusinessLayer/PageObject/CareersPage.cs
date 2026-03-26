@@ -1,7 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
-namespace BusinessLayer.src
+namespace BusinessLayer.PageObject
 {
     public class CareersPage
     {

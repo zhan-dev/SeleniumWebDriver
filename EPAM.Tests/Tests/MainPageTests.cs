@@ -1,6 +1,6 @@
-﻿using BusinessLayer.src;
+﻿using BusinessLayer.PageObject;
 
-namespace EPAM.Tests.src
+namespace EPAM.Tests.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
@@ -10,7 +10,6 @@ namespace EPAM.Tests.src
         private MainPage mainPage;
 
         private static readonly string[] searchCorrectKeywords = ["BLOCKCHAIN", "Cloud", "Automation"];
-
         public override void SetUp()
         {
             base.SetUp();
