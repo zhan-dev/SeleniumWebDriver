@@ -11,6 +11,18 @@ namespace EPAM.Tests.Tests
         private CareersPage careersPage;
 
         private static readonly string[] keywords = ["c#", ".net", "java", "javascript"];
+        private static readonly string[] countries = ["Ukrain", "India", "Japan"];
+
+        public static IEnumerable<TestCaseData> KeywordsAndCountries()
+        {
+            foreach (var keyword in keywords)
+            {
+                foreach (var country in countries)
+                {
+                    yield return new TestCaseData(keyword, country);
+                }
+            }
+        }
 
         public override void SetUp()
         {
@@ -34,7 +46,7 @@ namespace EPAM.Tests.Tests
         }
 
         [TestCaseSource(nameof(keywords))]
-        public void UserGoToCareersSearch_UseCareersSearchPanelWithoutFilters_SearchResultsIsAsExpected(string searchText)
+        public void UserGoToCareersSearch_UseCareersSearchPanelWithoutFilters_SearchResultsAreValid(string searchText)
         {
             //Act
             this.careersPage.ClickStartYourSearchHereButton();
@@ -42,8 +54,22 @@ namespace EPAM.Tests.Tests
             this.careersPage.EnterTextToSearchInput(searchText);
             this.careersPage.ClickFindButton();
 
-            //this.careersPage.EnterTextToCountryInput("test");
-            //this.careersPage.AddRemoteFilter();
+            this.careersPage.ExpandLastElement();
+            bool isAllValid = this.careersPage.ValidateLastElementContains(searchText);
+
+                Assert.That(isAllValid, Is.True);
+        }
+
+        [TestCaseSource(nameof(KeywordsAndCountries))]
+        public void UserGoToCareersSearch_UseCareersSearchPanelWithRemoteFilter_SearchResultsAreValid(
+            string searchText, string countries)
+        {
+            //Act
+            this.careersPage.ClickStartYourSearchHereButton();
+            this.careersPage.AcceptAllCookie();
+            this.careersPage.EnterTextToSearchInput(searchText);
+            this.careersPage.EnterTextToCountryInput(countries);
+            this.careersPage.AddRemoteFilter();
 
             this.careersPage.ExpandLastElement();
             bool isAllValid = this.careersPage.ValidateLastElementContains(searchText);
@@ -54,7 +80,6 @@ namespace EPAM.Tests.Tests
         [TearDown]
         public override void TearDown()
         {
-            //Thread.Sleep(7000);
             base.TearDown();
         }
     }

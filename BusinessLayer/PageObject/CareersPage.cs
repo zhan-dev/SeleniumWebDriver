@@ -7,14 +7,14 @@ namespace BusinessLayer.PageObject
     {
         private readonly IWebDriver driver;
 
+        private readonly By remoteCheckboxBy = By.CssSelector("label[for='checkbox-vacancy_type-Remote-_r_0_']");
         private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
+        private readonly By inputCountryBy = By.CssSelector("input[role='combobox'][aria-label='Choose your country']");
+        private readonly By declineButtonBy = By.XPath("//div[contains(@class,'dropdown__clear-indicator')]");
         private readonly By searchDivWrapperBy = By.Id("anchor-list-wrapper");
-        private readonly By searchFilterRemoteCheckBoxBy = By.Id("checkbox-vacancy_type-Remote-_r_0_");
         private readonly By searchInputBy = By.Name("search");
         private readonly By searchFormButtonBy = By.Name("submit_search_box_button");
         private readonly By startYourSearchButtonBy = By.CssSelector("a.button-body");
-        private readonly By declineButtonBy = By.XPath("//div[contains(@class,'dropdown__clear-indicator')]");
-        private readonly By searchFiltersBlockBy = By.ClassName("Filter_form__uZl4i");
         private readonly By searchResultsElementsBy = By.ClassName("JobCard_panel__gTD7e");
         private readonly By revealArrowBy = By.CssSelector("[data-testid='accordion-section-header-icon']");
         private readonly By requirementsContainerBy = By.CssSelector("[data-testid='accordion-section-children-container']");
@@ -46,9 +46,11 @@ namespace BusinessLayer.PageObject
 
         public void EnterTextToCountryInput(string searchCountry)
         {
-            var searchPanelWrapper = this.driver.FindElement(searchDivWrapperBy);
-            var declineButton = searchPanelWrapper.FindElement(declineButtonBy);
-            declineButton.Click();
+            this.driver.FindElement(declineButtonBy).Click();
+            var inputCountry = this.driver.FindElement(inputCountryBy);
+            inputCountry.Click();
+            inputCountry.SendKeys(searchCountry);
+            inputCountry.SendKeys(Keys.Enter);
         }
 
         public void ClickFindButton()
@@ -60,8 +62,12 @@ namespace BusinessLayer.PageObject
 
         public void AddRemoteFilter()
         {
-            var searchPanelWrapper = this.driver.FindElement(searchFiltersBlockBy);
-            var remoteFilter = searchPanelWrapper.FindElement(searchFilterRemoteCheckBoxBy);
+            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            var remoteFilter = wait.Until(drv =>
+            {
+                var element = drv.FindElement(remoteCheckboxBy);
+                return (element.Displayed && element.Enabled) ? element : null;
+            });
             remoteFilter.Click();
         }
 
@@ -149,6 +155,8 @@ namespace BusinessLayer.PageObject
                     return null;
                 }
             }).Click();
+
+            wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
         }
     }
 }
