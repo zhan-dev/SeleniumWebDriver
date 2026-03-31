@@ -84,7 +84,7 @@ namespace BusinessLayer.PageObject
         public IReadOnlyCollection<IWebElement> GetSearchResultsCollection()
         {
             //Emulate "FindMore" click
-            //ScrollAndClicForAllResults();
+            //ScrollAndClickForAllResults();
 
             var containerWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
             return containerWait.Until(drv =>
