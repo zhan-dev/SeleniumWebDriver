@@ -18,6 +18,9 @@ namespace BusinessLayer.PageObject
         private readonly By topNavigationList = By.ClassName("top-navigation__row");
         private readonly By findButtonBy = By.CssSelector(".search-results__action-section > button");
         private readonly By careersLinkBy = By.LinkText("Careers");
+        private readonly By footerBy = By.TagName("footer");
+        private readonly By policiesCodeOfEthicalConductBy = 
+            By.XPath("//div[@class='policies']//li/a[contains(text(),'Code of Ethical Conduct')]");
 
         public string Url { get;  } = "https://www.epam.com/";
 
@@ -121,6 +124,26 @@ namespace BusinessLayer.PageObject
             }
         }
 
+        public void ScrollToFooter()
+        {
+            new Actions(driver)
+                .SendKeys(Keys.End)
+                .Pause(TimeSpan.FromSeconds(1))
+                .Perform();
+        }
+
+        public void ClickCodeOfEthicalConductPDFLink()
+        {
+            var item = driver.FindElement(policiesCodeOfEthicalConductBy);
+
+            new Actions(driver)
+                .MoveToElement(item)
+                .Pause(TimeSpan.FromSeconds(1))
+                .Click()
+                .Pause(TimeSpan.FromSeconds(1))
+                .Perform();
+        }
+
         private void WaitUntilTitleIsPresented()
         {
             var titleWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
@@ -142,6 +165,8 @@ namespace BusinessLayer.PageObject
                     return null;
                 }
             }).Click();
+
+            wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
         }
 
         private IWebElement NavigationList()

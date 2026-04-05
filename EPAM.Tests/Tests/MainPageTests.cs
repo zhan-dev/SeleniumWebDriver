@@ -48,6 +48,24 @@ namespace EPAM.Tests.Tests
             });
         }
 
+        [Test]
+        public void UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected()
+        {
+            //Arrange
+            string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+            string expectedFileName = "Code-Of-Conduct_01_26.pdf";
+
+            //Act
+            this.mainPage.ScrollToFooter();
+            this.mainPage.ClickCodeOfEthicalConductPDFLink();
+            string fullPath = Path.Combine(downloadsPath, expectedFileName);
+
+            bool isExist = File.Exists(fullPath);
+
+            //Assert
+            Assert.That(isExist, Is.True);
+        }
+
         [TearDown]
         public override void TearDown()
         {
