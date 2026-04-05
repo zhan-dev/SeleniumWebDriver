@@ -12,7 +12,7 @@ namespace CoreLayer.WebDriver
             var options = new ChromeOptions();
 
             options.AddExcludedArgument("enable-automation");
-            //options.AddArgument("--incognito");
+            options.AddArgument("--incognito");
 
             if (mode is WebBrowserMode.Silent)
             {

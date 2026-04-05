@@ -24,6 +24,7 @@ namespace EPAM.Tests.Tests
             }
         }
 
+        [SetUp]
         public override void SetUp()
         {
             base.SetUp();

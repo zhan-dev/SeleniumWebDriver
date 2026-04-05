@@ -18,6 +18,7 @@ namespace BusinessLayer.PageObject
         private readonly By topNavigationList = By.ClassName("top-navigation__row");
         private readonly By findButtonBy = By.CssSelector(".search-results__action-section > button");
         private readonly By careersLinkBy = By.LinkText("Careers");
+        private readonly By insightsPageLinkBy = By.LinkText("Insights");
         private readonly By footerBy = By.TagName("footer");
         private readonly By policiesCodeOfEthicalConductBy = 
             By.XPath("//div[@class='policies']//li/a[contains(text(),'Code of Ethical Conduct')]");
@@ -43,6 +44,15 @@ namespace BusinessLayer.PageObject
         {
             var navList = NavigationList();
             var careersLink = navList.FindElement(careersLinkBy);
+            careersLink.Click();
+
+            this.WaitUntilTitleIsPresented();
+        }
+
+        public void GoToInsightsPage()
+        {
+            var navList = NavigationList();
+            var careersLink = navList.FindElement(insightsPageLinkBy);
             careersLink.Click();
 
             this.WaitUntilTitleIsPresented();

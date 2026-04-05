@@ -10,6 +10,8 @@ namespace EPAM.Tests.Tests
         private MainPage mainPage;
 
         private static readonly string[] searchCorrectKeywords = ["BLOCKCHAIN", "Cloud", "Automation"];
+
+        [SetUp]
         public override void SetUp()
         {
             base.SetUp();

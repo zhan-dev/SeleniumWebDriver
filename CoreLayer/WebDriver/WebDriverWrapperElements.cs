@@ -7,11 +7,6 @@ namespace CoreLayer.WebDriver
 {
     public partial class WebDriverWrapper
     {
-        public void WaitUntilTitleContains(string text, int? waitTime = null)
-        {
-            this.WaitForTitleToBePresent(this._driver, text, this.Timeout(waitTime));
-        }
-
         public void Click(By by, int? waitTime = null)
         {
             this.WaitForElementToBePresent(this._driver, by, this.Timeout(waitTime)).Click();
@@ -113,34 +108,6 @@ namespace CoreLayer.WebDriver
                     catch (StaleElementReferenceException)
                     {
                         return null;
-                    }
-                });
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-                this.Logger(ex);
-                throw;
-            }
-        }
-
-        private void WaitForTitleToBePresent(IWebDriver driver, string text, TimeSpan timeout)
-        {
-            ArgumentNullException.ThrowIfNull(driver);
-            ArgumentNullException.ThrowIfNull(text);
-
-            var wait = new WebDriverWait(driver, timeout);
-
-            try
-            {
-                wait.Until(drv =>
-                {
-                    try
-                    {
-                        return drv.Title.Contains(text);
-                    }
-                    catch (WebDriverException)
-                    {
-                        return false;
                     }
                 });
             }
