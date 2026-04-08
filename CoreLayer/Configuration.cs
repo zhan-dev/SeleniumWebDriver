@@ -2,13 +2,12 @@
 
 namespace CoreLayer;
 
-public class Configuration
+public static class Configuration
 {
-    public static string BrowserType { get; private set; }
-
-    public static string AppUrl { get; private set; }
-
-    public static string TestDataPath { get; private set; }
+    public static string BrowserType { get; private set; } = "Chrome";
+    public static string AppUrl { get; private set; } = string.Empty;
+    public static string TestDataPath { get; private set; } = string.Empty;
+    public static string LoggingLevel { get; private set; } = "Information";
 
     static Configuration() => Init();
 
@@ -19,8 +18,9 @@ public class Configuration
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
 
-        BrowserType = configuration["BrowserType"] ?? "Chrome";
-        AppUrl = configuration["ApplicationUrl"] ?? string.Empty;
-        TestDataPath = configuration["TestDataPath"] ?? string.Empty;
+        BrowserType = configuration["Application:BrowserType"] ?? BrowserType;
+        AppUrl = configuration["Application:ApplicationUrl"] ?? AppUrl;
+        TestDataPath = configuration["Application:TestDataPath"] ?? TestDataPath;
+        LoggingLevel = configuration["Logging:MinimumLevel:Default"] ?? LoggingLevel;
     }
 }
