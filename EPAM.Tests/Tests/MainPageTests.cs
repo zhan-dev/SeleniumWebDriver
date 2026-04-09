@@ -1,4 +1,7 @@
 ﻿using BusinessLayer.PageObject;
+using CoreLayer;
+using DataLayer;
+using System.Text.Json;
 
 namespace EPAM.Tests.Tests
 {
@@ -9,14 +12,26 @@ namespace EPAM.Tests.Tests
     {
         private MainPage mainPage;
 
-        private static readonly string[] searchCorrectKeywords = ["BLOCKCHAIN", "Cloud", "Automation"];
+        private static readonly string[] searchKeywords = ["BLOCKCHAIN", "Cloud", "Automation"];
+        private static IEnumerable<string> searchCorrectKeywords
+        {
+            get
+            {
+                //var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData.json");
+                //var json = File.ReadAllText(path);
+                var json = File.ReadAllText(Configuration.TestDataPath);
+                var models = JsonSerializer.Deserialize<List<SearchModel>>(json);
+
+                return models.SelectMany(m => m.SearchKeywords);
+            }
+        }
 
         [SetUp]
         public override void SetUp()
         {
             base.SetUp();
 
-            this.mainPage = new MainPage(this.driver);
+            this.mainPage = new MainPage(this.DriverWrapper, this.Logger);
             this.mainPage.LoadMainPage();
         }
 
@@ -30,9 +45,11 @@ namespace EPAM.Tests.Tests
             Assert.That(this.mainPage.GetTitle(), Is.EqualTo(expectedTitle));
         }
 
-        [TestCaseSource(nameof(searchCorrectKeywords))]
+        [TestCaseSource(nameof(searchKeywords))]
         public void UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected(string searchText)
         {
+            Logger.Information("Starting the test 'UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected'.");
+
             //Act
             this.mainPage.ClickSearchButton();
             this.mainPage.InputDataIntoSearchInput(searchText);
@@ -48,6 +65,32 @@ namespace EPAM.Tests.Tests
                 Assert.That(results, Is.Not.Empty);
                 Assert.That(isAllValid, Is.True);
             });
+
+            Logger.Information("Ending the test 'UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected'.");
+        }
+
+        [TestCaseSource(nameof(searchCorrectKeywords))]
+        public void UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected_WithJsonData(string searchText)
+        {
+            Logger.Information("Starting the test 'UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected_WithJsonData'.");
+
+            //Act
+            this.mainPage.ClickSearchButton();
+            this.mainPage.InputDataIntoSearchInput(searchText);
+            this.mainPage.ClickFindButton();
+
+            var results = this.mainPage.GetSearchResultsCollection();
+            this.mainPage.SearchResultsToConsole(results);
+            bool isAllValid = this.mainPage.IsSearchResultsValid(results, searchText);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(results, Is.Not.Empty);
+                Assert.That(isAllValid, Is.True);
+            });
+
+            Logger.Information("Ending the test 'UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected_WithJsonData'.");
         }
 
         [Test]

@@ -7,6 +7,7 @@ namespace CoreLayer.WebDriver
         private readonly IWebDriver _driver;
         private readonly TimeSpan _timeout;
         private const int WaitTimeInSeconds = 10;
+        public IWebDriver Driver => this._driver;
 
         public WebDriverWrapper(IWebDriver driver, int explicitWaitTime = WaitTimeInSeconds)
         {

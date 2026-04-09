@@ -49,12 +49,18 @@ namespace CoreLayer.WebDriver
             return WaitForChildElementToBePresent(parent, childBy, this.Timeout(waitTime));
         }
 
+        public IWebElement FindChildByParent(By parentBy, By childBy, int? waitTime = null)
+        {
+            return WaitForElementToBePresent(this._driver, parentBy, childBy, this.Timeout(waitTime));
+        }
+
         public void ClickAndSendAction(IWebElement element, string textToSend)
         {
             var clickAndSendKeysActions = new Actions(this._driver);
             clickAndSendKeysActions.Click(element)
                 .Pause(TimeSpan.FromSeconds(1))
                 .SendKeys(textToSend)
+                .Pause(TimeSpan.FromSeconds(1))
                 .Perform();
         }
 
@@ -85,30 +91,50 @@ namespace CoreLayer.WebDriver
             }
         }
 
+        private IWebElement WaitForElementToBePresent(IWebDriver driver, By parentBy, By childBy, TimeSpan timeout)
+        {
+            ArgumentNullException.ThrowIfNull(driver);
+            ArgumentNullException.ThrowIfNull(parentBy);
+            ArgumentNullException.ThrowIfNull(childBy);
+
+            var wait = new WebDriverWait(driver, timeout);
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
+
+            try
+            {
+                return wait.Until(drv =>
+                {
+                    var parent = drv.FindElement(parentBy);
+                    if (!parent.Displayed)
+                    {
+                        return null;
+                    }
+
+                    var element = parent.FindElement(childBy);
+                    return element.Displayed ? element : null;
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                this.Logger(ex);
+                throw;
+            }
+        }
+
         private IWebElement WaitForElementToBePresent(IWebDriver driver, By by, TimeSpan timeout)
         {
             ArgumentNullException.ThrowIfNull(driver);
             ArgumentNullException.ThrowIfNull(by);
 
             var wait = new WebDriverWait(driver, timeout);
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
 
             try
             {
                 return wait.Until(drv =>
                 {
-                    try
-                    {
-                        var element = drv.FindElement(by);
-                        return element.Displayed ? element : null;
-                    }
-                    catch (NoSuchElementException)
-                    {
-                        return null;
-                    }
-                    catch (StaleElementReferenceException)
-                    {
-                        return null;
-                    }
+                    var element = drv.FindElement(by);
+                    return element.Displayed ? element : null;
                 });
             }
             catch (WebDriverTimeoutException ex)

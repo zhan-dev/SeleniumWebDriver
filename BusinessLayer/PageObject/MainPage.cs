@@ -1,16 +1,15 @@
-﻿using OpenQA.Selenium;
+﻿using CoreLayer;
+using CoreLayer.WebDriver;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
 namespace BusinessLayer.PageObject
 {
-    public class MainPage
+    public class MainPage : BasePage
     {
-        private readonly IWebDriver driver;
-
-        private readonly By titleBy = By.TagName("title");
         private readonly By searchInputBy = By.Id("new_form_search");
-        private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
+        //private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
         private readonly By searchButtonBy = By.ClassName("header__icon");
         private readonly By headerSearchPanelBy = By.ClassName("header-search__panel");
         private readonly By searchResultsCollectionElementsBy = By.ClassName("search-results__item");
@@ -19,67 +18,65 @@ namespace BusinessLayer.PageObject
         private readonly By findButtonBy = By.CssSelector(".search-results__action-section > button");
         private readonly By careersLinkBy = By.LinkText("Careers");
         private readonly By insightsPageLinkBy = By.LinkText("Insights");
-        private readonly By footerBy = By.TagName("footer");
         private readonly By policiesCodeOfEthicalConductBy = 
             By.XPath("//div[@class='policies']//li/a[contains(text(),'Code of Ethical Conduct')]");
 
         public string Url { get;  } = "https://www.epam.com/";
 
-        public MainPage(IWebDriver driver)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(nameof(driver));
-
-            this.driver = driver;
-        }
+        public MainPage(WebDriverWrapper driver, Logger logger) : base(driver, logger) { }
 
         public void LoadMainPage()
         {
-            this.driver.Navigate().GoToUrl(Url);
+            this.DriverWrapper.NavigateTo(Url);
 
-            this.WaitUntilTitleIsPresented();
-            this.AcceptAllCookie();
+            base.WaitUntilTitleContains(base.mainPageTitle);
+            base.AcceptAllCookie();
         }
 
         public void GoToCareers()
         {
-            var navList = NavigationList();
-            var careersLink = navList.FindElement(careersLinkBy);
-            careersLink.Click();
+            //var navList = NavigationList();
+            //var careersLink = navList.FindElement(careersLinkBy);
+            //careersLink.Click();
 
-            this.WaitUntilTitleIsPresented();
+            this.DriverWrapper.FindChildByParent(topNavigationList, careersLinkBy).Click();
+
+            base.WaitUntilTitleContains(base.mainPageTitle);
         }
 
         public void GoToInsightsPage()
         {
-            var navList = NavigationList();
-            var careersLink = navList.FindElement(insightsPageLinkBy);
-            careersLink.Click();
+            //var navList = NavigationList();
+            //var careersLink = navList.FindElement(insightsPageLinkBy);
+            //careersLink.Click();
 
-            this.WaitUntilTitleIsPresented();
+            this.DriverWrapper.FindChildByParent(topNavigationList, insightsPageLinkBy).Click();
+
+            base.WaitUntilTitleContains(base.insightsPageTitle);
         }
 
         public string GetTitle()
         {
-            return this.driver.Title;
+            return this.DriverWrapper.GetTitle();
         }
 
         public void ClickSearchButton()
         {
-            this.driver.FindElement(this.searchButtonBy).Click();
+            this.DriverWrapper.FindElement(this.searchButtonBy).Click();
         }
 
         public void InputDataIntoSearchInput(string searchText)
         {
-            var waitInput = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            var activeInput = waitInput.Until(drv =>
+            var waitInput = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
+            var activeInput = waitInput.Until((Func<IWebDriver, IWebElement?>)(drv =>
             {
-                var searchPanel = this.driver.FindElement(headerSearchPanelBy);
+                var searchPanel = this.DriverWrapper.FindElement(headerSearchPanelBy);
                 var element = searchPanel.FindElement(searchInputBy);
 
-                return (element.Displayed && element.Enabled) ? element : null;
-            });
+                return (IWebElement?)((element.Displayed && element.Enabled) ? element : null);
+            }));
 
-            var clickAndSendKeysActions = new Actions(this.driver);
+            var clickAndSendKeysActions = new Actions(this.DriverWrapper.Driver);
             clickAndSendKeysActions.Click(activeInput)
                 .Pause(TimeSpan.FromSeconds(0.5))
                 .SendKeys(searchText)
@@ -89,9 +86,11 @@ namespace BusinessLayer.PageObject
 
         public void ClickFindButton()
         {
-            var searchPanel = this.driver.FindElement(headerSearchPanelBy);
-            var findButton = searchPanel.FindElement(findButtonBy);
-            findButton.Click();
+            //var searchPanel = this.DriverWrapper.FindElement(headerSearchPanelBy);
+            //var findButton = searchPanel.FindElement(findButtonBy);
+            //findButton.Click();
+
+            this.DriverWrapper.FindChildByParent(headerSearchPanelBy, findButtonBy).Click();
         }
 
         public IReadOnlyCollection<IWebElement> GetSearchResultsCollection()
@@ -99,7 +98,7 @@ namespace BusinessLayer.PageObject
             //Emulate "FindMore" click
             //ScrollAndClickForAllResults();
 
-            var containerWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            var containerWait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
             return containerWait.Until(drv =>
             {
                 var elements = drv.FindElements(searchResultsCollectionElementsBy);
@@ -136,7 +135,7 @@ namespace BusinessLayer.PageObject
 
         public void ScrollToFooter()
         {
-            new Actions(driver)
+            new Actions(this.DriverWrapper.Driver)
                 .SendKeys(Keys.End)
                 .Pause(TimeSpan.FromSeconds(1))
                 .Perform();
@@ -144,9 +143,9 @@ namespace BusinessLayer.PageObject
 
         public void ClickCodeOfEthicalConductPDFLink()
         {
-            var item = driver.FindElement(policiesCodeOfEthicalConductBy);
+            var item = this.DriverWrapper.FindElement(policiesCodeOfEthicalConductBy);
 
-            new Actions(driver)
+            new Actions(this.DriverWrapper.Driver)
                 .MoveToElement(item)
                 .Pause(TimeSpan.FromSeconds(1))
                 .Click()
@@ -154,59 +153,59 @@ namespace BusinessLayer.PageObject
                 .Perform();
         }
 
-        private void WaitUntilTitleIsPresented()
-        {
-            var titleWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            titleWait.Until(driver => driver.FindElement(this.titleBy));
-        }
+        //private void WaitUntilTitleIsPresented()
+        //{
+        //    var titleWait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
+        //    titleWait.Until(driver => driver.FindElement(this.titleBy));
+        //}
 
-        private void AcceptAllCookie()
-        {
-            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            wait.Until(drv =>
-            {
-                try
-                {
-                    var element = drv.FindElement(acceptAllCookieBy);
-                    return (element.Displayed && element.Enabled) ? element : null;
-                }
-                catch (NoSuchElementException)
-                {
-                    return null;
-                }
-            }).Click();
+        //private void AcceptAllCookie()
+        //{
+        //    var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
+        //    wait.Until(drv =>
+        //    {
+        //        try
+        //        {
+        //            var element = drv.FindElement(acceptAllCookieBy);
+        //            return (element.Displayed && element.Enabled) ? element : null;
+        //        }
+        //        catch (NoSuchElementException)
+        //        {
+        //            return null;
+        //        }
+        //    }).Click();
 
-            wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
-        }
+        //    wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
+        //}
 
-        private IWebElement NavigationList()
-        {
-            return this.driver.FindElement(topNavigationList);
-        }
+        //private IWebElement NavigationList()
+        //{
+        //    return this.DriverWrapper.FindElement(topNavigationList);
+        //}
 
         private void ScrollAndClickForAllResults()
         {
-            var waitViewMoreButton = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            var waitViewMoreButton = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
             while (true)
             {
 
-                new WebDriverWait(this.driver, TimeSpan.FromSeconds(5))
+                new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5))
                     .Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
 
-                new Actions(this.driver)
+                new Actions(this.DriverWrapper.Driver)
                     .SendKeys(Keys.End)
                     .Perform();
 
                 try
                 {
-                    var showMoreButton = waitViewMoreButton.Until(drv =>
+                    var showMoreButton = waitViewMoreButton.Until((Func<IWebDriver, IWebElement?>)(drv =>
                     {
-                        var element = this.driver.FindElement(viewMoreSearchResultsButtonBy);
+                        var element = this.DriverWrapper.FindElement(viewMoreSearchResultsButtonBy);
 
-                        return (element.Displayed && element.Enabled) ? element : null;
-                    });
+                        return (IWebElement?)((element.Displayed && element.Enabled) ? element : null);
+                    }));
 
-                    new Actions(this.driver)
+                    new Actions(this.DriverWrapper.Driver)
                         .MoveToElement(showMoreButton)
                         .Pause(TimeSpan.FromSeconds(1))
                         .Click(showMoreButton)

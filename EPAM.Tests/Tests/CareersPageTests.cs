@@ -29,8 +29,8 @@ namespace EPAM.Tests.Tests
         {
             base.SetUp();
 
-            this.mainPage = new MainPage(this.driver);
-            this.careersPage = new CareersPage(this.driver);
+            //this.mainPage = new MainPage(this.driver);
+            //this.careersPage = new CareersPage(this.driver);
 
             this.mainPage.LoadMainPage();
             this.mainPage.GoToCareers();

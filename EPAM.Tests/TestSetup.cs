@@ -1,24 +1,26 @@
-﻿using CoreLayer.Enums;
+﻿using CoreLayer;
 using CoreLayer.WebDriver;
-using OpenQA.Selenium;
 
 namespace EPAM.Tests
 {
     internal abstract class TestSetup
     {
-        protected IWebDriver driver;
+        protected WebDriverWrapper DriverWrapper { get; private set; }
+        protected Logger Logger { get; private set; }
 
         [SetUp]
         public virtual void SetUp()
         {
             ChromeDriverFactory driverFactory = new ChromeDriverFactory();
-            this.driver = driverFactory.CreateDriver(WebBrowserMode.UXUI);
+            var driver = driverFactory.CreateDriver(Configuration.WebBrowserMode);
+            this.DriverWrapper = new WebDriverWrapper(driver);
+            this.Logger ??= new Logger();
         }
 
         [TearDown]
-        public virtual void TearDown() 
+        public virtual void TearDown()
         {
-            driver?.Dispose();
+            this.DriverWrapper.Close();
         }
     }
 }
