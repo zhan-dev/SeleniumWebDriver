@@ -9,7 +9,6 @@ namespace BusinessLayer.PageObject
     public class MainPage : BasePage
     {
         private readonly By searchInputBy = By.Id("new_form_search");
-        //private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
         private readonly By searchButtonBy = By.ClassName("header__icon");
         private readonly By headerSearchPanelBy = By.ClassName("header-search__panel");
         private readonly By searchResultsCollectionElementsBy = By.ClassName("search-results__item");
@@ -35,21 +34,13 @@ namespace BusinessLayer.PageObject
 
         public void GoToCareers()
         {
-            //var navList = NavigationList();
-            //var careersLink = navList.FindElement(careersLinkBy);
-            //careersLink.Click();
-
             this.DriverWrapper.FindChildByParent(topNavigationList, careersLinkBy).Click();
 
-            base.WaitUntilTitleContains(base.mainPageTitle);
+            base.WaitUntilTitleContains(base.careersPageTitle);
         }
 
         public void GoToInsightsPage()
         {
-            //var navList = NavigationList();
-            //var careersLink = navList.FindElement(insightsPageLinkBy);
-            //careersLink.Click();
-
             this.DriverWrapper.FindChildByParent(topNavigationList, insightsPageLinkBy).Click();
 
             base.WaitUntilTitleContains(base.insightsPageTitle);
@@ -152,36 +143,6 @@ namespace BusinessLayer.PageObject
                 .Pause(TimeSpan.FromSeconds(1))
                 .Perform();
         }
-
-        //private void WaitUntilTitleIsPresented()
-        //{
-        //    var titleWait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
-        //    titleWait.Until(driver => driver.FindElement(this.titleBy));
-        //}
-
-        //private void AcceptAllCookie()
-        //{
-        //    var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
-        //    wait.Until(drv =>
-        //    {
-        //        try
-        //        {
-        //            var element = drv.FindElement(acceptAllCookieBy);
-        //            return (element.Displayed && element.Enabled) ? element : null;
-        //        }
-        //        catch (NoSuchElementException)
-        //        {
-        //            return null;
-        //        }
-        //    }).Click();
-
-        //    wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
-        //}
-
-        //private IWebElement NavigationList()
-        //{
-        //    return this.DriverWrapper.FindElement(topNavigationList);
-        //}
 
         private void ScrollAndClickForAllResults()
         {

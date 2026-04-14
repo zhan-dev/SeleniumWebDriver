@@ -7,9 +7,9 @@ namespace BusinessLayer.PageObject
 {
     public abstract class BasePage
     {
+        private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
         protected WebDriverWrapper DriverWrapper { get; }
         protected Logger Logger { get; }
-        private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
         protected readonly string mainPageTitle = "EPAM | Software Engineering & Product Development Services";
         protected readonly string careersPageTitle = "Explore Professional Growth Opportunities | EPAM Careers";
         protected readonly string insightsPageTitle = "Discover our Latest Insights | EPAM";

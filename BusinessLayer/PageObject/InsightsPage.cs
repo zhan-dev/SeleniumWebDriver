@@ -1,13 +1,13 @@
-﻿using OpenQA.Selenium;
+﻿using CoreLayer;
+using CoreLayer.WebDriver;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
 namespace BusinessLayer.PageObject
 {
-    public class InsightsPage
+    public class InsightsPage : BasePage
     {
-        private readonly IWebDriver driver;
-
         private readonly By titleBy = By.TagName("title");
         
         private readonly By mainSliderRightArrowButtonBy = 
@@ -20,22 +20,17 @@ namespace BusinessLayer.PageObject
         private readonly By readTheReportButtonBy = By.XPath("//a[contains(@href, 'ai-report-2025') and @tabindex='0']");
         private readonly By introductionHeaderBy = By.TagName("h1");
 
-        public InsightsPage(IWebDriver driver)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(nameof(driver));
-
-            this.driver = driver;
-        }
+        public InsightsPage(WebDriverWrapper driver, Logger logger) : base(driver, logger) { }
 
         public string GetTitle()
         {
-            return this.driver.Title;
+            return this.DriverWrapper.GetTitle();
         }
 
         public void ClickMainSliderRightArrow()
         {
-            var rightArrow = this.driver.FindElement(mainSliderRightArrowButtonBy);
-            new Actions(this.driver)
+            var rightArrow = this.DriverWrapper.FindElement(mainSliderRightArrowButtonBy);
+            new Actions(this.DriverWrapper.Driver)
                 .Click(rightArrow)
                 .Pause(TimeSpan.FromSeconds(1))
                 .Perform();
@@ -43,7 +38,7 @@ namespace BusinessLayer.PageObject
 
         public string MainSliderGetBusinessValueText()
         {
-            var spans = this.driver.FindElements(mainSliderBusinessValueTextBy);
+            var spans = this.DriverWrapper.FindElements(mainSliderBusinessValueTextBy);
 
             return string.Join("", spans.Select(s => s.Text)).Trim();
         }
@@ -52,18 +47,18 @@ namespace BusinessLayer.PageObject
         {
             WaitUntilTitleIsPresented();
 
-            return this.driver.FindElement(introductionHeaderBy).Text;
+            return this.DriverWrapper.FindElement(introductionHeaderBy).Text;
         }
 
         private void WaitUntilTitleIsPresented()
         {
-            var titleWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            var titleWait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
             titleWait.Until(driver => driver.FindElement(this.titleBy));
         }
 
         public void ClickReadTheReportButton()
         {
-            this.driver.FindElement(readTheReportButtonBy).Click();
+            this.DriverWrapper.FindElement(readTheReportButtonBy).Click();
         }
     }
 }

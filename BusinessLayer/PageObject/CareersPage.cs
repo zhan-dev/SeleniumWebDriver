@@ -1,15 +1,14 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
+﻿using CoreLayer;
+using CoreLayer.WebDriver;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
 namespace BusinessLayer.PageObject
 {
-    public class CareersPage
+    public class CareersPage : BasePage
     {
-        private readonly IWebDriver driver;
-
         private readonly By remoteCheckboxBy = By.CssSelector("label[for='checkbox-vacancy_type-Remote-_r_0_']");
-        private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
+        //private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
         private readonly By inputCountryBy = By.CssSelector("input[role='combobox'][aria-label='Choose your country']");
         private readonly By declineButtonBy = By.XPath("//div[contains(@class,'dropdown__clear-indicator')]");
         private readonly By searchDivWrapperBy = By.Id("anchor-list-wrapper");
@@ -22,33 +21,30 @@ namespace BusinessLayer.PageObject
         private readonly By requirementsListBy = By.CssSelector("[data-testid='categories-container']");
         private readonly By requirementsElementBy = By.CssSelector("[data-testid='job-details-category-container']");
 
-        public CareersPage(IWebDriver driver)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(nameof(driver));
-            this.driver = driver;
-        }
+        public CareersPage(WebDriverWrapper driver, Logger logger) : base(driver, logger) { }
 
         public string GetTitle()
         {
-            return this.driver.Title;
+            return this.DriverWrapper.GetTitle();
         }
 
         public void ClickStartYourSearchHereButton()
         {
-            this.driver.FindElement(startYourSearchButtonBy).Click();
+            this.DriverWrapper.FindElement(startYourSearchButtonBy).Click();
+            base.AcceptAllCookie();
         }
 
         public void EnterTextToSearchInput(string searchText)
         {
-            var searchPanelWrapper = this.driver.FindElement(searchDivWrapperBy);
+            var searchPanelWrapper = this.DriverWrapper.FindElement(searchDivWrapperBy);
             var searchInput = searchPanelWrapper.FindElement(searchInputBy);
             searchInput.SendKeys(searchText);
         }
 
         public void EnterTextToCountryInput(string searchCountry)
         {
-            this.driver.FindElement(declineButtonBy).Click();
-            var inputCountry = this.driver.FindElement(inputCountryBy);
+            this.DriverWrapper.FindElement(declineButtonBy).Click();
+            var inputCountry = this.DriverWrapper.FindElement(inputCountryBy);
             inputCountry.Click();
             inputCountry.SendKeys(searchCountry);
             inputCountry.SendKeys(Keys.Enter);
@@ -56,14 +52,14 @@ namespace BusinessLayer.PageObject
 
         public void ClickFindButton()
         {
-            var searchPanelWrapper = this.driver.FindElement(searchDivWrapperBy);
+            var searchPanelWrapper = this.DriverWrapper.FindElement(searchDivWrapperBy);
             var findButton = searchPanelWrapper.FindElement(searchFormButtonBy);
             findButton.Click();
         }
 
         public void AddRemoteFilter()
         {
-            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
             var remoteFilter = wait.Until(drv =>
             {
                 var element = drv.FindElement(remoteCheckboxBy);
@@ -74,7 +70,7 @@ namespace BusinessLayer.PageObject
 
         public void ExpandLastElement()
         {
-            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(2));
+            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(2));
             var revealArrow = wait.Until(drv =>
             {
                 var elements = drv.FindElements(searchResultsElementsBy);
@@ -108,7 +104,7 @@ namespace BusinessLayer.PageObject
 
         public bool ValidateLastElementContains(string searchText)
         {
-            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
+            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
 
             var expandedText = wait.Until(drv =>
             {
@@ -141,23 +137,23 @@ namespace BusinessLayer.PageObject
 
             return expandedText is not null && expandedText.Contains(searchText, StringComparison.OrdinalIgnoreCase);
         }
-        public void AcceptAllCookie()
-        {
-            var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5));
-            wait.Until(drv =>
-            {
-                try
-                {
-                    var element = drv.FindElement(acceptAllCookieBy);
-                    return (element.Displayed && element.Enabled) ? element : null;
-                }
-                catch (NoSuchElementException)
-                {
-                    return null;
-                }
-            }).Click();
+        //public void AcceptAllCookie()
+        //{
+        //    var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
+        //    wait.Until(drv =>
+        //    {
+        //        try
+        //        {
+        //            var element = drv.FindElement(acceptAllCookieBy);
+        //            return (element.Displayed && element.Enabled) ? element : null;
+        //        }
+        //        catch (NoSuchElementException)
+        //        {
+        //            return null;
+        //        }
+        //    }).Click();
 
-            wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
-        }
+        //    wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
+        //}
     }
 }

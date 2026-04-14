@@ -15,8 +15,8 @@ namespace EPAM.Tests.Tests
         {
             base.SetUp();
 
-            //this.mainPage = new MainPage(this.driver);
-            //this.insightsPage = new InsightsPage(this.driver);
+            this.mainPage = new MainPage(this.DriverWrapper, this.Logger);
+            this.insightsPage = new InsightsPage(this.DriverWrapper, this.Logger);
 
             this.mainPage.LoadMainPage();
             this.mainPage.GoToInsightsPage();

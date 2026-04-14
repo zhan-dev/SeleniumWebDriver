@@ -17,8 +17,6 @@ namespace EPAM.Tests.Tests
         {
             get
             {
-                //var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData.json");
-                //var json = File.ReadAllText(path);
                 var json = File.ReadAllText(Configuration.TestDataPath);
                 var models = JsonSerializer.Deserialize<List<SearchModel>>(json);
 
@@ -31,18 +29,22 @@ namespace EPAM.Tests.Tests
         {
             base.SetUp();
 
-            this.mainPage = new MainPage(this.DriverWrapper, this.Logger);
+            this.mainPage = new MainPage(base.DriverWrapper, base.Logger);
             this.mainPage.LoadMainPage();
         }
 
         [Test]
         public void UserGoToUrl_WaitUntilTitleIsLoaded_TitleIsAsExpected()
         {
+            Logger.Information("Starting the test 'UserGoToUrl_WaitUntilTitleIsLoaded_TitleIsAsExpected'.");
+
             //Arrange
             string expectedTitle = "EPAM | Software Engineering & Product Development Services";
 
             // Assert
             Assert.That(this.mainPage.GetTitle(), Is.EqualTo(expectedTitle));
+
+            Logger.Information("Ending the test 'UserGoToUrl_WaitUntilTitleIsLoaded_TitleIsAsExpected'.");
         }
 
         [TestCaseSource(nameof(searchKeywords))]
@@ -96,6 +98,8 @@ namespace EPAM.Tests.Tests
         [Test]
         public void UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected()
         {
+            Logger.Information("Ending the test 'UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected'.");
+
             //Arrange
             string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
             string expectedFileName = "Code-Of-Conduct_01_26.pdf";
@@ -109,6 +113,8 @@ namespace EPAM.Tests.Tests
 
             //Assert
             Assert.That(isExist, Is.True);
+
+            Logger.Information("Enging the test 'UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected'.");
         }
 
         [TearDown]

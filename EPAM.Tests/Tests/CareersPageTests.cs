@@ -29,8 +29,8 @@ namespace EPAM.Tests.Tests
         {
             base.SetUp();
 
-            //this.mainPage = new MainPage(this.driver);
-            //this.careersPage = new CareersPage(this.driver);
+            this.mainPage = new MainPage(base.DriverWrapper, base.Logger);
+            this.careersPage = new CareersPage(base.DriverWrapper, base.Logger);
 
             this.mainPage.LoadMainPage();
             this.mainPage.GoToCareers();
@@ -39,19 +39,25 @@ namespace EPAM.Tests.Tests
         [Test]
         public void UserGoToUrl_WaitUntilTitleIsLoaded_TitleIsAsExpected()
         {
+            Logger.Information("Starting the test 'UserGoToUrl_WaitUntilTitleIsLoaded_TitleIsAsExpected'.");
+
             //Arrange
             string expectedTitle = "Explore Professional Growth Opportunities | EPAM Careers";
 
             // Assert
             Assert.That(this.careersPage.GetTitle(), Is.EqualTo(expectedTitle));
+
+            Logger.Information("Ending the test 'UserGoToUrl_WaitUntilTitleIsLoaded_TitleIsAsExpected'.");
         }
 
         [TestCaseSource(nameof(keywords))]
         public void UserGoToCareersSearch_UseCareersSearchPanelWithoutFilters_SearchResultsAreValid(string searchText)
         {
+            Logger.Information("Starting the test 'UserGoToCareersSearch_UseCareersSearchPanelWithoutFilters_SearchResultsAreValid'.");
+
             //Act
             this.careersPage.ClickStartYourSearchHereButton();
-            this.careersPage.AcceptAllCookie();
+            //this.careersPage.AcceptAllCookie();
             this.careersPage.EnterTextToSearchInput(searchText);
             this.careersPage.ClickFindButton();
 
@@ -59,15 +65,19 @@ namespace EPAM.Tests.Tests
             bool isAllValid = this.careersPage.ValidateLastElementContains(searchText);
 
                 Assert.That(isAllValid, Is.True);
+            Logger.Information("Ending the test 'UserGoToCareersSearch_UseCareersSearchPanelWithoutFilters_SearchResultsAreValid'.");
+
         }
 
         [TestCaseSource(nameof(KeywordsAndCountries))]
         public void UserGoToCareersSearch_UseCareersSearchPanelWithRemoteFilter_SearchResultsAreValid(
             string searchText, string countries)
         {
+            Logger.Information("Starting the test 'UserGoToCareersSearch_UseCareersSearchPanelWithRemoteFilter_SearchResultsAreValid'.");
+
             //Act
             this.careersPage.ClickStartYourSearchHereButton();
-            this.careersPage.AcceptAllCookie();
+            //this.careersPage.AcceptAllCookie();
             this.careersPage.EnterTextToSearchInput(searchText);
             this.careersPage.EnterTextToCountryInput(countries);
             this.careersPage.AddRemoteFilter();
@@ -75,7 +85,9 @@ namespace EPAM.Tests.Tests
             this.careersPage.ExpandLastElement();
             bool isAllValid = this.careersPage.ValidateLastElementContains(searchText);
 
-                Assert.That(isAllValid, Is.True);
+            Assert.That(isAllValid, Is.True);
+
+            Logger.Information("Ending the test 'UserGoToCareersSearch_UseCareersSearchPanelWithRemoteFilter_SearchResultsAreValid'.");
         }
 
         [TearDown]
