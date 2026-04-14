@@ -35,10 +35,13 @@ namespace EPAM.Tests.Tests
         [Test]
         public void UserNavigateToInsights_UserSwapCarouselAndClickReadMore_CarouselTitleIsSameAsReadMoreTitle()
         {
+            Logger.Information("Starting the test 'UserNavigateToInsights_UserSwapCarouselAndClickReadMore_CarouselTitleIsSameAsReadMoreTitle'.");
+
             //Arrange
             string expectedText = "From Hype to Impact: How Enterprises Can Unlock Real Business Value with AI";
 
             //Act
+            this.insightsPage.ClickMainSliderRightArrow();
             this.insightsPage.ClickMainSliderRightArrow();
             this.insightsPage.ClickMainSliderRightArrow();
             var getSliderText = this.insightsPage.MainSliderGetBusinessValueText();
@@ -51,12 +54,13 @@ namespace EPAM.Tests.Tests
                 Assert.That(getSliderText, Is.EqualTo(expectedText));
                 Assert.That(expectedText, Is.EqualTo(textHeader));
             });
+
+            Logger.Information("Ending the test 'UserNavigateToInsights_UserSwapCarouselAndClickReadMore_CarouselTitleIsSameAsReadMoreTitle'.");
         }
 
         [TearDown]
         public override void TearDown()
         {
-            Thread.Sleep(3000);
             base.TearDown();
         }
     }

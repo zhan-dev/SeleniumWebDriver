@@ -98,7 +98,7 @@ namespace EPAM.Tests.Tests
         [Test]
         public void UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected()
         {
-            Logger.Information("Ending the test 'UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected'.");
+            Logger.Information("Starting the test 'UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected'.");
 
             //Arrange
             string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
@@ -114,7 +114,7 @@ namespace EPAM.Tests.Tests
             //Assert
             Assert.That(isExist, Is.True);
 
-            Logger.Information("Enging the test 'UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected'.");
+            Logger.Information("Ending the test 'UserGoToFooterOnMainPage_UserClickCodeOfEthicalConductPDFLink_DownloadedFileAsExpected'.");
         }
 
         [TearDown]

@@ -77,10 +77,6 @@ namespace BusinessLayer.PageObject
 
         public void ClickFindButton()
         {
-            //var searchPanel = this.DriverWrapper.FindElement(headerSearchPanelBy);
-            //var findButton = searchPanel.FindElement(findButtonBy);
-            //findButton.Click();
-
             this.DriverWrapper.FindChildByParent(headerSearchPanelBy, findButtonBy).Click();
         }
 

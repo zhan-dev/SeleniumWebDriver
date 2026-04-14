@@ -57,14 +57,13 @@ namespace EPAM.Tests.Tests
 
             //Act
             this.careersPage.ClickStartYourSearchHereButton();
-            //this.careersPage.AcceptAllCookie();
             this.careersPage.EnterTextToSearchInput(searchText);
             this.careersPage.ClickFindButton();
 
             this.careersPage.ExpandLastElement();
             bool isAllValid = this.careersPage.ValidateLastElementContains(searchText);
 
-                Assert.That(isAllValid, Is.True);
+            Assert.That(isAllValid, Is.True);
             Logger.Information("Ending the test 'UserGoToCareersSearch_UseCareersSearchPanelWithoutFilters_SearchResultsAreValid'.");
 
         }
@@ -77,8 +76,8 @@ namespace EPAM.Tests.Tests
 
             //Act
             this.careersPage.ClickStartYourSearchHereButton();
-            //this.careersPage.AcceptAllCookie();
             this.careersPage.EnterTextToSearchInput(searchText);
+            this.careersPage.ClickFindButton();
             this.careersPage.EnterTextToCountryInput(countries);
             this.careersPage.AddRemoteFilter();
 
@@ -93,6 +92,7 @@ namespace EPAM.Tests.Tests
         [TearDown]
         public override void TearDown()
         {
+            Thread.Sleep(5000);
             base.TearDown();
         }
     }

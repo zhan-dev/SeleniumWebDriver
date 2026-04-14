@@ -109,7 +109,7 @@ namespace CoreLayer.WebDriver
                     {
                         return null;
                     }
-
+                    
                     var element = parent.FindElement(childBy);
                     return element.Displayed ? element : null;
                 });

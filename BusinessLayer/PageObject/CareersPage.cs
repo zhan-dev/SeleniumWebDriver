@@ -7,8 +7,9 @@ namespace BusinessLayer.PageObject
 {
     public class CareersPage : BasePage
     {
-        private readonly By remoteCheckboxBy = By.CssSelector("label[for='checkbox-vacancy_type-Remote-_r_0_']");
-        //private readonly By acceptAllCookieBy = By.Id("onetrust-accept-btn-handler");
+        //private readonly By remoteCheckboxBy = By.CssSelector("label[for='checkbox-vacancy_type-Remote-_r_o_']");
+
+        private readonly By remoteCheckboxBy = By.XPath("//label[span[text()='Remote']]");
         private readonly By inputCountryBy = By.CssSelector("input[role='combobox'][aria-label='Choose your country']");
         private readonly By declineButtonBy = By.XPath("//div[contains(@class,'dropdown__clear-indicator')]");
         private readonly By searchDivWrapperBy = By.Id("anchor-list-wrapper");
@@ -43,11 +44,55 @@ namespace BusinessLayer.PageObject
 
         public void EnterTextToCountryInput(string searchCountry)
         {
-            this.DriverWrapper.FindElement(declineButtonBy).Click();
-            var inputCountry = this.DriverWrapper.FindElement(inputCountryBy);
-            inputCountry.Click();
-            inputCountry.SendKeys(searchCountry);
-            inputCountry.SendKeys(Keys.Enter);
+            var wait2 = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
+            wait2.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
+            try
+            {
+                wait2.Until(drv =>
+                {
+                    var element = drv.FindElement(declineButtonBy);
+                    if (element.Displayed && element.Enabled)
+                    {
+                        element.Click();
+                        return true;
+                    }
+
+                    return false;
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                this.Logger.Error(ex.Message);
+                throw;
+            }
+
+            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
+
+            try
+            {
+                wait.Until(drv =>
+                {
+                    var element = drv.FindElement(inputCountryBy);
+
+                    if (element.Displayed && element.Enabled)
+                    {
+                        element.Click();
+                        element.SendKeys(searchCountry);
+                        element.SendKeys(Keys.Enter);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                this.Logger.Error(ex.Message);
+                throw;
+            }
         }
 
         public void ClickFindButton()
@@ -59,41 +104,49 @@ namespace BusinessLayer.PageObject
 
         public void AddRemoteFilter()
         {
-            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
-            var remoteFilter = wait.Until(drv =>
+            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
+            wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
+            wait.Until(drv =>
             {
                 var element = drv.FindElement(remoteCheckboxBy);
-                return (element.Displayed && element.Enabled) ? element : null;
+                if(element.Displayed && element.Enabled)
+                {
+                    element.Click();
+                    return true;
+                }
+                return false;
             });
-            remoteFilter.Click();
         }
 
         public void ExpandLastElement()
         {
-            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(2));
-            var revealArrow = wait.Until(drv =>
-            {
-                var elements = drv.FindElements(searchResultsElementsBy);
-                var last = elements.LastOrDefault();
-                if (last is null)
-                {
-                    return null;
-                }
-                try
-                {
-                    return last.FindElement(revealArrowBy);
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return null;
-                }
-                catch (NoSuchElementException)
-                {
-                    return null;
-                }
-            });
+            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException),typeof(StaleElementReferenceException));
 
-            revealArrow.Click();
+            try
+            {
+                wait.Until(drv =>
+                {
+                    var elements = drv.FindElements(searchResultsElementsBy);
+                    var last = elements.LastOrDefault();
+                    if (last is null)
+                    {
+                        return false;
+                    }
+                    var arrow = last.FindElement(revealArrowBy);
+                    if (arrow.Displayed && arrow.Enabled)
+                    {
+                        arrow.Click();
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                this.Logger.Error(ex.Message);
+                throw;
+            }
 
             wait.Until(drv =>
             {
@@ -137,23 +190,5 @@ namespace BusinessLayer.PageObject
 
             return expandedText is not null && expandedText.Contains(searchText, StringComparison.OrdinalIgnoreCase);
         }
-        //public void AcceptAllCookie()
-        //{
-        //    var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
-        //    wait.Until(drv =>
-        //    {
-        //        try
-        //        {
-        //            var element = drv.FindElement(acceptAllCookieBy);
-        //            return (element.Displayed && element.Enabled) ? element : null;
-        //        }
-        //        catch (NoSuchElementException)
-        //        {
-        //            return null;
-        //        }
-        //    }).Click();
-
-        //    wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
-        //}
     }
 }

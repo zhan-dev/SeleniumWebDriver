@@ -2,21 +2,20 @@
 using CoreLayer.WebDriver;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.UI;
 
 namespace BusinessLayer.PageObject
 {
     public class InsightsPage : BasePage
     {
-        private readonly By titleBy = By.TagName("title");
-        
         private readonly By mainSliderRightArrowButtonBy = 
             By.XPath("//div[@class='slider section']//div[@class='slider__navigation']//button[contains(@class,'slider__right-arrow')]");
         
+        //private readonly By mainSliderBusinessValueTextBy =
+        //    By.XPath("//div[@class='slider section']//div[contains(@class, 'single-slide__content')]//div[@class='text']" +
+        //        "//p//span[contains(@class, 'museo-sans-light') or contains(@class, 'gradient-text')]");
         private readonly By mainSliderBusinessValueTextBy =
-            By.XPath("//div[@class='slider section']//div[contains(@class, 'single-slide__content')]//div[@class='text']" +
-                "//p//span[contains(@class, 'museo-sans-light') or contains(@class, 'gradient-text')]");
-        
+            By.XPath("//div[@class='single-slide__content-container']//span[contains(text(),'Business Value')]");
+
         private readonly By readTheReportButtonBy = By.XPath("//a[contains(@href, 'ai-report-2025') and @tabindex='0']");
         private readonly By introductionHeaderBy = By.TagName("h1");
 
@@ -45,15 +44,9 @@ namespace BusinessLayer.PageObject
 
         public string IntroductionHeaderText()
         {
-            WaitUntilTitleIsPresented();
+            base.WaitUntilTitleContains(base.insightsPageTitle);
 
             return this.DriverWrapper.FindElement(introductionHeaderBy).Text;
-        }
-
-        private void WaitUntilTitleIsPresented()
-        {
-            var titleWait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
-            titleWait.Until(driver => driver.FindElement(this.titleBy));
         }
 
         public void ClickReadTheReportButton()
