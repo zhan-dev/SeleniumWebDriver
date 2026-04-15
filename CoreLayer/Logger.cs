@@ -13,7 +13,7 @@ namespace CoreLayer
                 ? parsedLevel
                 : LogEventLevel.Information;
 
-            _logger = new LoggerConfiguration()
+            this._logger = new LoggerConfiguration()
                 .MinimumLevel.Is(level)
                 .WriteTo.Console()
                 .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
@@ -22,17 +22,17 @@ namespace CoreLayer
 
         public void Information(string message)
         {
-            _logger.Information("[INFO]: {Message}", message);
+            this._logger.Information("[INFO]: {Message}", message);
         }
 
         public void Warning(string message)
         {
-            _logger.Warning("[WARNING]: {Message}", message);
+            this._logger.Warning("[WARNING]: {Message}", message);
         }
 
         public void Error(string message)
         {
-            _logger.Error("[ERROR]: {Message}", message);
+            this._logger.Error("[ERROR]: {Message}", message);
         }
     }
 }

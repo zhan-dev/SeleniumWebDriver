@@ -4,7 +4,6 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumKeys = OpenQA.Selenium.Keys;
-using FormsKeys = System.Windows.Forms.Keys;
 
 namespace BusinessLayer.PageObject
 {
@@ -36,14 +35,14 @@ namespace BusinessLayer.PageObject
 
         public void GoToCareers()
         {
-            this.DriverWrapper.FindChildByParent(topNavigationList, careersLinkBy).Click();
+            this.DriverWrapper.FindChildByParent(this.topNavigationList, this.careersLinkBy).Click();
 
             base.WaitUntilTitleContains(base.careersPageTitle);
         }
 
         public void GoToInsightsPage()
         {
-            this.DriverWrapper.FindChildByParent(topNavigationList, insightsPageLinkBy).Click();
+            this.DriverWrapper.FindChildByParent(this.topNavigationList, this.insightsPageLinkBy).Click();
 
             base.WaitUntilTitleContains(base.insightsPageTitle);
         }
@@ -61,25 +60,20 @@ namespace BusinessLayer.PageObject
         public void InputDataIntoSearchInput(string searchText)
         {
             var waitInput = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
-            var activeInput = waitInput.Until((Func<IWebDriver, IWebElement?>)(drv =>
+            var activeInput = waitInput.Until(drv =>
             {
-                var searchPanel = this.DriverWrapper.FindElement(headerSearchPanelBy);
-                var element = searchPanel.FindElement(searchInputBy);
+                var searchPanel = this.DriverWrapper.FindElement(this.headerSearchPanelBy);
+                var element = searchPanel.FindElement(this.searchInputBy);
 
-                return (IWebElement?)((element.Displayed && element.Enabled) ? element : null);
-            }));
+                return element.Displayed && element.Enabled ? element : null;
+            });
 
-            var clickAndSendKeysActions = new Actions(this.DriverWrapper.Driver);
-            clickAndSendKeysActions.Click(activeInput)
-                .Pause(TimeSpan.FromSeconds(0.5))
-                .SendKeys(searchText)
-                .Pause(TimeSpan.FromSeconds(0.5))
-                .Perform();
+            this.DriverWrapper.ClickAndSendAction(activeInput, searchText);
         }
 
         public void ClickFindButton()
         {
-            this.DriverWrapper.FindChildByParent(headerSearchPanelBy, findButtonBy).Click();
+            this.DriverWrapper.FindChildByParent(this.headerSearchPanelBy, this.findButtonBy).Click();
         }
 
         public IReadOnlyCollection<IWebElement> GetSearchResultsCollection()
@@ -90,7 +84,7 @@ namespace BusinessLayer.PageObject
             var containerWait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
             return containerWait.Until(drv =>
             {
-                var elements = drv.FindElements(searchResultsCollectionElementsBy);
+                var elements = drv.FindElements(this.searchResultsCollectionElementsBy);
                 return elements.Count > 0 ? elements : null;
             });
         }
@@ -132,7 +126,7 @@ namespace BusinessLayer.PageObject
 
         public void ClickCodeOfEthicalConductPDFLink()
         {
-            var item = this.DriverWrapper.FindElement(policiesCodeOfEthicalConductBy);
+            var item = this.DriverWrapper.FindElement(this.policiesCodeOfEthicalConductBy);
 
             new Actions(this.DriverWrapper.Driver)
                 .MoveToElement(item)
@@ -157,12 +151,12 @@ namespace BusinessLayer.PageObject
 
                 try
                 {
-                    var showMoreButton = waitViewMoreButton.Until((Func<IWebDriver, IWebElement?>)(drv =>
+                    var showMoreButton = waitViewMoreButton.Until(drv =>
                     {
                         var element = this.DriverWrapper.FindElement(viewMoreSearchResultsButtonBy);
 
-                        return (IWebElement?)((element.Displayed && element.Enabled) ? element : null);
-                    }));
+                        return element.Displayed && element.Enabled ? element : null;
+                    });
 
                     new Actions(this.DriverWrapper.Driver)
                         .MoveToElement(showMoreButton)

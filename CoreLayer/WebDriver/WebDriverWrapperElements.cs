@@ -3,7 +3,6 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System.Runtime.CompilerServices;
 using SeleniumKeys = OpenQA.Selenium.Keys;
-using FormsKeys = System.Windows.Forms.Keys;
 
 namespace CoreLayer.WebDriver
 {
@@ -58,12 +57,12 @@ namespace CoreLayer.WebDriver
 
         public void ClickAndSendAction(IWebElement element, string textToSend)
         {
-            var clickAndSendKeysActions = new Actions(this._driver);
-            clickAndSendKeysActions.Click(element)
-                .Pause(TimeSpan.FromSeconds(1))
-                .SendKeys(textToSend)
-                .Pause(TimeSpan.FromSeconds(1))
-                .Perform();
+            new Actions(this._driver)
+            .Click(element)
+            .Pause(TimeSpan.FromSeconds(1))
+            .SendKeys(textToSend)
+            .Pause(TimeSpan.FromSeconds(1))
+            .Perform();
         }
 
         private IWebElement WaitForChildElementToBePresent(IWebElement parent, By childBy, TimeSpan timeout)

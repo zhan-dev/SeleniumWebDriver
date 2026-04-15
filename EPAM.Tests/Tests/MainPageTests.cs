@@ -1,10 +1,7 @@
 ﻿using BusinessLayer.PageObject;
 using CoreLayer;
 using DataLayer;
-using NUnit.Framework.Interfaces;
-using OpenQA.Selenium;
 using System.Text.Json;
-using TestFramework.Core.BrowserUtils;
 
 namespace EPAM.Tests.Tests
 {
@@ -16,7 +13,7 @@ namespace EPAM.Tests.Tests
         private MainPage mainPage;
 
         private static readonly string[] searchKeywords = ["BLOCKCHAIN", "Cloud", "Automation"];
-        private static IEnumerable<string> searchCorrectKeywords
+        private static IEnumerable<string> SearchCorrectKeywords
         {
             get
             {
@@ -74,7 +71,7 @@ namespace EPAM.Tests.Tests
             Logger.Information("Ending the test 'UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected'.");
         }
 
-        [TestCaseSource(nameof(searchCorrectKeywords))]
+        [TestCaseSource(nameof(SearchCorrectKeywords))]
         public void UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected_WithJsonData(string searchText)
         {
             Logger.Information("Starting the test 'UserGoToGlobalSearch_UseGlobalSearchPanel_SearchResultsIsAsExpected_WithJsonData'.");
@@ -123,11 +120,6 @@ namespace EPAM.Tests.Tests
         [TearDown]
         public override void TearDown()
         {
-            if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
-            {
-                ScreenshotMaker.TakeBrowserScreenshot((ITakesScreenshot)base.DriverWrapper.Driver);
-                ScreenshotMaker.TakeFullDisplayScreenshot();
-            }
             base.TearDown();
         }
     }

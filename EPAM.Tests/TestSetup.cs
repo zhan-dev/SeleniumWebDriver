@@ -1,5 +1,8 @@
 ﻿using CoreLayer;
 using CoreLayer.WebDriver;
+using NUnit.Framework.Interfaces;
+using OpenQA.Selenium;
+using TestFramework.Core.BrowserUtils;
 
 namespace EPAM.Tests
 {
@@ -20,6 +23,13 @@ namespace EPAM.Tests
         [TearDown]
         public virtual void TearDown()
         {
+            //for screenshots
+            //if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
+            //{
+            //    ScreenshotMaker.TakeBrowserScreenshot((ITakesScreenshot)this.DriverWrapper.Driver);
+            //    ScreenshotMaker.TakeFullDisplayScreenshot();
+            //}
+
             this.DriverWrapper.Close();
         }
     }

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TestFramework.Core.BrowserUtils
 {
-    public class ScreenshotMaker
+    public static class ScreenshotMaker
     {
         private static readonly string ScreenshotFolder = Path.Combine(Environment.CurrentDirectory, "Screenshots");
 
