@@ -1,7 +1,10 @@
 ﻿using BusinessLayer.PageObject;
 using CoreLayer;
 using DataLayer;
+using NUnit.Framework.Interfaces;
+using OpenQA.Selenium;
 using System.Text.Json;
+using TestFramework.Core.BrowserUtils;
 
 namespace EPAM.Tests.Tests
 {
@@ -120,6 +123,11 @@ namespace EPAM.Tests.Tests
         [TearDown]
         public override void TearDown()
         {
+            if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
+            {
+                ScreenshotMaker.TakeBrowserScreenshot((ITakesScreenshot)base.DriverWrapper.Driver);
+                ScreenshotMaker.TakeFullDisplayScreenshot();
+            }
             base.TearDown();
         }
     }

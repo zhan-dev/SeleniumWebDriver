@@ -3,6 +3,8 @@ using CoreLayer.WebDriver;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using SeleniumKeys = OpenQA.Selenium.Keys;
+using FormsKeys = System.Windows.Forms.Keys;
 
 namespace BusinessLayer.PageObject
 {
@@ -123,7 +125,7 @@ namespace BusinessLayer.PageObject
         public void ScrollToFooter()
         {
             new Actions(this.DriverWrapper.Driver)
-                .SendKeys(Keys.End)
+                .SendKeys(SeleniumKeys.End)
                 .Pause(TimeSpan.FromSeconds(1))
                 .Perform();
         }
@@ -150,7 +152,7 @@ namespace BusinessLayer.PageObject
                     .Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
 
                 new Actions(this.DriverWrapper.Driver)
-                    .SendKeys(Keys.End)
+                    .SendKeys(SeleniumKeys.End)
                     .Perform();
 
                 try

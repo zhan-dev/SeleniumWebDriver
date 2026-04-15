@@ -44,7 +44,7 @@ namespace BusinessLayer.PageObject
             {
                 wait.Until(drv =>
                 {
-                    var element = drv.FindElement(acceptAllCookieBy);
+                    var element = drv.FindElement(this.acceptAllCookieBy);
                     return (element.Displayed && element.Enabled) ? element : null;
                 }).Click();
             }
@@ -54,7 +54,7 @@ namespace BusinessLayer.PageObject
                 throw;
             }
 
-            wait.Until(drv => !drv.FindElement(acceptAllCookieBy).Displayed);
+            wait.Until(drv => !drv.FindElement(this.acceptAllCookieBy).Displayed);
         }
     }
 }

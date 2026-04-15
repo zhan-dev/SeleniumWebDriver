@@ -2,6 +2,8 @@
 using CoreLayer.WebDriver;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using SeleniumKeys = OpenQA.Selenium.Keys;
+using FormsKeys = System.Windows.Forms.Keys;
 
 namespace BusinessLayer.PageObject
 {
@@ -79,7 +81,7 @@ namespace BusinessLayer.PageObject
                     {
                         element.Click();
                         element.SendKeys(searchCountry);
-                        element.SendKeys(Keys.Enter);
+                        element.SendKeys(SeleniumKeys.Enter);
                         return true;
                     }
                     else

@@ -2,6 +2,8 @@
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System.Runtime.CompilerServices;
+using SeleniumKeys = OpenQA.Selenium.Keys;
+using FormsKeys = System.Windows.Forms.Keys;
 
 namespace CoreLayer.WebDriver
 {
@@ -29,8 +31,8 @@ namespace CoreLayer.WebDriver
         {
             var element = this.WaitForElementToBePresent(this._driver, by, this.Timeout(waitTime));
             element.Click();
-            element.SendKeys(Keys.Control + "a");
-            element.SendKeys(Keys.Delete);
+            element.SendKeys(SeleniumKeys.Control + "a");
+            element.SendKeys(SeleniumKeys.Delete);
         }
 
         public IWebElement FindElement(By by, int? waitTime = null)
@@ -105,11 +107,6 @@ namespace CoreLayer.WebDriver
                 return wait.Until(drv =>
                 {
                     var parent = drv.FindElement(parentBy);
-                    if (!parent.Displayed)
-                    {
-                        return null;
-                    }
-                    
                     var element = parent.FindElement(childBy);
                     return element.Displayed ? element : null;
                 });
