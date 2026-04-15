@@ -3,14 +3,11 @@ using CoreLayer.WebDriver;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumKeys = OpenQA.Selenium.Keys;
-using FormsKeys = System.Windows.Forms.Keys;
 
 namespace BusinessLayer.PageObject
 {
     public class CareersPage : BasePage
     {
-        //private readonly By remoteCheckboxBy = By.CssSelector("label[for='checkbox-vacancy_type-Remote-_r_o_']");
-
         private readonly By remoteCheckboxBy = By.XPath("//label[span[text()='Remote']]");
         private readonly By inputCountryBy = By.CssSelector("input[role='combobox'][aria-label='Choose your country']");
         private readonly By declineButtonBy = By.XPath("//div[contains(@class,'dropdown__clear-indicator')]");
@@ -33,26 +30,25 @@ namespace BusinessLayer.PageObject
 
         public void ClickStartYourSearchHereButton()
         {
-            this.DriverWrapper.FindElement(startYourSearchButtonBy).Click();
+            this.DriverWrapper.FindElement(this.startYourSearchButtonBy).Click();
             base.AcceptAllCookie();
         }
 
         public void EnterTextToSearchInput(string searchText)
         {
-            var searchPanelWrapper = this.DriverWrapper.FindElement(searchDivWrapperBy);
-            var searchInput = searchPanelWrapper.FindElement(searchInputBy);
-            searchInput.SendKeys(searchText);
+            this.DriverWrapper.FindChildByParent(this.searchDivWrapperBy, this.searchInputBy)
+                .SendKeys(searchText);
         }
 
         public void EnterTextToCountryInput(string searchCountry)
         {
-            var wait2 = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
-            wait2.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
+            var waitBtn = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
+            waitBtn.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
             try
             {
-                wait2.Until(drv =>
+                waitBtn.Until(drv =>
                 {
-                    var element = drv.FindElement(declineButtonBy);
+                    var element = drv.FindElement(this.declineButtonBy);
                     if (element.Displayed && element.Enabled)
                     {
                         element.Click();
@@ -68,14 +64,14 @@ namespace BusinessLayer.PageObject
                 throw;
             }
 
-            var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
-            wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
+            var waitInput = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
+            waitInput.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
 
             try
             {
-                wait.Until(drv =>
+                waitInput.Until(drv =>
                 {
-                    var element = drv.FindElement(inputCountryBy);
+                    var element = drv.FindElement(this.inputCountryBy);
 
                     if (element.Displayed && element.Enabled)
                     {
@@ -99,18 +95,16 @@ namespace BusinessLayer.PageObject
 
         public void ClickFindButton()
         {
-            var searchPanelWrapper = this.DriverWrapper.FindElement(searchDivWrapperBy);
-            var findButton = searchPanelWrapper.FindElement(searchFormButtonBy);
-            findButton.Click();
+            this.DriverWrapper.FindChildByParent(this.searchDivWrapperBy, this.searchFormButtonBy).Click();
         }
 
         public void AddRemoteFilter()
         {
             var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(10));
-            wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
             wait.Until(drv =>
             {
-                var element = drv.FindElement(remoteCheckboxBy);
+                var element = drv.FindElement(this.remoteCheckboxBy);
                 if(element.Displayed && element.Enabled)
                 {
                     element.Click();
@@ -123,19 +117,19 @@ namespace BusinessLayer.PageObject
         public void ExpandLastElement()
         {
             var wait = new WebDriverWait(this.DriverWrapper.Driver, TimeSpan.FromSeconds(5));
-            wait.IgnoreExceptionTypes(typeof(NoSuchElementException),typeof(StaleElementReferenceException));
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
 
             try
             {
                 wait.Until(drv =>
                 {
-                    var elements = drv.FindElements(searchResultsElementsBy);
+                    var elements = drv.FindElements(this.searchResultsElementsBy);
                     var last = elements.LastOrDefault();
                     if (last is null)
                     {
                         return false;
                     }
-                    var arrow = last.FindElement(revealArrowBy);
+                    var arrow = last.FindElement(this.revealArrowBy);
                     if (arrow.Displayed && arrow.Enabled)
                     {
                         arrow.Click();
@@ -152,7 +146,7 @@ namespace BusinessLayer.PageObject
 
             wait.Until(drv =>
             {
-                var containers = drv.FindElements(requirementsContainerBy);
+                var containers = drv.FindElements(this.requirementsContainerBy);
                 return containers.Count > 0 && containers.Last().Displayed;
             });
         }
@@ -163,8 +157,8 @@ namespace BusinessLayer.PageObject
 
             var expandedText = wait.Until(drv =>
             {
-                var containers = drv.FindElement(requirementsListBy);
-                var categoryBlocks = containers.FindElements(requirementsElementBy);
+                var containers = drv.FindElement(this.requirementsListBy);
+                var categoryBlocks = containers.FindElements(this.requirementsElementBy);
 
                 if (categoryBlocks.Count == 0)
                 {

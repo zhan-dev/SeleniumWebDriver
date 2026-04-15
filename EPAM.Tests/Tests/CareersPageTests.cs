@@ -92,7 +92,6 @@ namespace EPAM.Tests.Tests
         [TearDown]
         public override void TearDown()
         {
-            Thread.Sleep(5000);
             base.TearDown();
         }
     }
