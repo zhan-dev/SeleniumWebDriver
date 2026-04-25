@@ -1,5 +1,4 @@
-﻿using CoreLayer.Enums;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace CoreLayer;
 
@@ -9,7 +8,7 @@ public static class Configuration
     public static string AppUrl { get; private set; } = string.Empty;
     public static string TestDataPath { get; private set; } = string.Empty;
     public static string LoggingLevel { get; private set; } = "Information";
-    public static WebBrowserMode WebBrowserMode { get; private set; } = WebBrowserMode.UXUI;
+    public static bool IsHeadless { get; private set; } = false;
 
     static Configuration() => Init();
 
@@ -25,10 +24,7 @@ public static class Configuration
         TestDataPath = configuration["Application:TestDataPath"] ?? TestDataPath;
         LoggingLevel = configuration["Logging:MinimumLevel:Default"] ?? LoggingLevel;
 
-        var modeString = configuration["WebBrowserMode:Default"] ?? WebBrowserMode.ToString();
-        if (Enum.TryParse<WebBrowserMode>(modeString, true, out var mode))
-        {
-            WebBrowserMode = mode;
-        }
+        string headless = configuration["WebBrowserMode:IsHeadless"] ?? IsHeadless.ToString();
+        IsHeadless = bool.TryParse(headless, out bool result) && result;
     }
 }

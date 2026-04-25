@@ -15,7 +15,7 @@ namespace EPAM.Tests
         public virtual void SetUp()
         {
             ChromeDriverFactory driverFactory = new ChromeDriverFactory();
-            var driver = driverFactory.CreateDriver(Configuration.WebBrowserMode);
+            var driver = driverFactory.CreateDriver();
             this.DriverWrapper = new WebDriverWrapper(driver);
             this.Logger ??= new Logger();
         }

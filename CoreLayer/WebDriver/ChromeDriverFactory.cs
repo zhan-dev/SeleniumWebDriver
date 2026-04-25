@@ -1,29 +1,32 @@
-﻿using CoreLayer.Enums;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace CoreLayer.WebDriver
 {
     public class ChromeDriverFactory : IWebDriverFactory
     {
-        public IWebDriver CreateDriver(WebBrowserMode mode)
+        public IWebDriver CreateDriver()
         {
             var service = ChromeDriverService.CreateDefaultService();
             var options = new ChromeOptions();
 
             options.AddExcludedArgument("enable-automation");
+
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-dev-shm-usage");
+
             options.AddArgument("--incognito");
 
-            if (mode is WebBrowserMode.Silent)
+            if (Configuration.IsHeadless)
             {
-                options.AddArgument("--headless");
+                options.AddArgument("--headless=new");
                 options.AddArgument("--disable-gpu");
                 options.AddArgument("--window-size=1920,1080");
             }
 
             var driver = new ChromeDriver(service, options, TimeSpan.FromSeconds(30));
 
-            if (mode is WebBrowserMode.UXUI)
+            if (!Configuration.IsHeadless)
             {
                 driver.Manage().Window.Maximize();
             }
