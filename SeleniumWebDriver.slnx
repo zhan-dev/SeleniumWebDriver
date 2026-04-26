@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path="run-tests.yml" />
+  </Folder>
   <Project Path="BusinessLayer/BusinessLayer.csproj">
     <BuildDependency Project="CoreLayer/CoreLayer.csproj" />
   </Project>
