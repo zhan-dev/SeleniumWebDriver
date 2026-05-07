@@ -1,6 +1,6 @@
 <Solution>
-  <Folder Name="/.github1/" />
-  <Folder Name="/.github1/workflows/">
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
     <File Path="ci.yml" />
     <File Path="run-tests.yml" />
   </Folder>
