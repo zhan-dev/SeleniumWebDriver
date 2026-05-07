@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   pull_request:
     branches: 
-      - main
+      - DEV
   schedule:
     - cron: '0 9 * * 1'
   workflow_dispatch:
