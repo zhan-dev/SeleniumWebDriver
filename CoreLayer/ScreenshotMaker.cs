@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 
 namespace TestFramework.Core.BrowserUtils
 {
@@ -18,15 +17,20 @@ namespace TestFramework.Core.BrowserUtils
 
         private static string NewScreenshotName
         {
-            get { return "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff") + "." + ScreenshotImageFormat; }
+            get 
+            { 
+                return "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff") + "." + ScreenshotImageFormat; 
+            }
         }
         private static ImageFormat ScreenshotImageFormat
         {
-            get { return ImageFormat.Jpeg; }
+            get 
+            { 
+                return ImageFormat.Jpeg; 
+            }
         }
         public static string TakeBrowserScreenshot(ITakesScreenshot driver)
         {
-            var now = DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff");
             var screenshotPath = Path.Combine(ScreenshotFolder, "Display" + NewScreenshotName);
             driver.GetScreenshot().SaveAsFile(screenshotPath);
 
@@ -34,18 +38,20 @@ namespace TestFramework.Core.BrowserUtils
         }
         public static string TakeFullDisplayScreenshot()
         {
+            var primaryScreen = Screen.PrimaryScreen ?? throw new InvalidOperationException("No primary screen detected.");
             var screenshotPath = Path.Combine(ScreenshotFolder, "FullScreen" + NewScreenshotName);
 
-            using (Bitmap bmpScreenCapture = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height))
+            using (Bitmap bmpScreenCapture = new(primaryScreen.Bounds.Width, primaryScreen.Bounds.Height))
             {
                 using (Graphics g = Graphics.FromImage(bmpScreenCapture))
                 {
-                    g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
-                                     Screen.PrimaryScreen.Bounds.Y,
+                    g.CopyFromScreen(primaryScreen.Bounds.X,
+                                     primaryScreen.Bounds.Y,
                                      0, 0,
                                      bmpScreenCapture.Size,
                                      CopyPixelOperation.SourceCopy);
                 }
+
                 bmpScreenCapture.Save(screenshotPath, ScreenshotImageFormat);
             }
             return screenshotPath;
